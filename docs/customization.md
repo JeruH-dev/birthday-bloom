@@ -34,6 +34,8 @@ If you want to manually override a color in `index.css`:
 }
 ```
 
+> Pro Tip: For mobile-safe visuals, avoid adding extra global animations on top of the engine's built-in mobile tuning.
+
 ---
 
 ## 💬 3. Kinetic Storytelling (The Script)
@@ -67,6 +69,7 @@ To keep the 60fps cinematic flow, your media MUST be optimized.
 - **Format**: Always use `.webp` if possible, otherwise `.jpg`. Avoid `.png` as it's too heavy.
 - **Size**: Keep every image under **500KB**.
 - **Dimensions**: Use **16:9** aspect ratio for the gallery to avoid "black bars" in the 3D tilt view.
+- **Mobile**: The gallery automatically disables tilt on phones and uses smoother transitions.
 
 ### Error Handling Example:
 If you use a broken URL in `.env`:
@@ -78,9 +81,25 @@ VITE_PHOTO_1="https://random-site.com/broken-link"
 VITE_PHOTO_1="https://images.unsplash.com/photo-1530101121243-c99ff3cdca42?auto=format&fit=crop&w=800&q=80"
 ```
 
+> The photo gallery supports lazy loading and will fall back gracefully if a memory image fails.
+
 ---
 
-## 🛠️ 5. Customizing the Interactive Cake
+## 🎁 5. Gift Surprise & Secret Code
+A new hidden gift reveal panel appears in the Wishes section. It uses `VITE_BIRTHDAY_RELATIONSHIP` and `VITE_BIRTHDAY_INTERESTS` to generate a playful code and reveal the surprise.
+
+## 📱 6. Mobile Smooth Mode
+The app now detects phones automatically and reduces animation intensity, hover effects, and particle counts for a smoother mobile experience.
+- Mobile gallery tilt is disabled.
+- Confetti and spark effects are quieter.
+- Cake-cutting interactions remain responsive and light.
+
+## 🎞️ 7. Video Content Support
+Use `VITE_FINAL_VIDEO_URL` for the end-of-journey reveal, or add `VITE_VIDEO_1`, `VITE_VIDEO_2`, and `VITE_VIDEO_3` for inline memory videos.
+
+---
+
+## 🛠️ 8. Customizing the Interactive Cake
 
 To change the "Cakes" available for selection, open `src/components/birthday/CakeCutting.tsx`:
 

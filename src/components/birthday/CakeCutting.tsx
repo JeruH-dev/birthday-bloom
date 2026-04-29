@@ -5,7 +5,8 @@ import { useConfetti } from "./Confetti";
 import { useSoundManager } from "./SoundManager";
 import { KineticText } from "./KineticText";
 import { useBirthdayStore } from "@/features/core/store/useBirthdayStore";
-import { motion, AnimatePresence } from "framer-motion";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 type Phase =
   | "select"
@@ -130,10 +131,10 @@ const MagicDust = ({ count }: { count: number }) => {
   );
 };
 
-const CakeSVG = ({ cake, split, candlesLit, name }: { cake: CakeOption; split: boolean; candlesLit: boolean; name: string }) => (
+const CakeSVG = ({ cake, split, candlesLit, name, springConfig }: { cake: CakeOption; split: boolean; candlesLit: boolean; name: string; springConfig?: { type: string; stiffness: number; damping: number } }) => (
   <motion.div 
     animate={{ rotateX: split ? 25 : 8, rotateY: split ? 5 : 0, scale: split ? 1.15 : 1 }}
-    transition={{ type: "spring", stiffness: 80, damping: 12 }}
+    transition={springConfig ?? { type: "spring", stiffness: 80, damping: 12 }}
     className="relative preserve-3d"
     style={{ perspective: "1500px" }}
   >
@@ -274,17 +275,19 @@ const CakeSVG = ({ cake, split, candlesLit, name }: { cake: CakeOption; split: b
   </motion.div>
 );
 
-const KnifeSVG = ({ phase }: { phase: Phase }) => (
-  <motion.div 
-    initial={{ y: -300, opacity: 0, rotate: -45 }}
-    animate={{ 
-      y: phase === "knife-enter" ? 0 : phase === "cutting" ? 50 : 0, 
-      opacity: 1, 
-      rotate: phase === "cutting" ? 0 : -20,
-      scale: phase === "cutting" ? 1.2 : 1
-    }}
-    transition={{ type: "spring", stiffness: 200, damping: 20 }}
-    className="absolute left-1/2 -translate-x-1/2 z-40"
+const KnifeSVG = ({ phase }: { phase: Phase }) => {
+  const isMobile = useIsMobile();
+  return (
+    <motion.div 
+      initial={{ y: -300, opacity: 0, rotate: -45 }}
+      animate={{ 
+        y: phase === "knife-enter" ? 0 : phase === "cutting" ? 50 : 0, 
+        opacity: 1, 
+        rotate: phase === "cutting" ? 0 : -20,
+        scale: phase === "cutting" ? 1.2 : 1
+      }}
+      transition={{ type: "spring", stiffness: isMobile ? 120 : 200, damping: isMobile ? 18 : 20 }}
+      className="absolute left-1/2 -translate-x-1/2 z-40"
   >
     <svg viewBox="0 0 40 150" className="w-12 sm:w-16 md:w-20 drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
       <defs>
@@ -301,24 +304,26 @@ const KnifeSVG = ({ phase }: { phase: Phase }) => (
   </motion.div>
 );
 
-const CakeCard = ({ cake, index, onSelect }: { cake: CakeOption; index: number; onSelect: () => void }) => (
-  <motion.button
-    whileHover={{ scale: 1.05, y: -10, rotateZ: 2 }}
-    whileTap={{ scale: 0.95 }}
-    onClick={onSelect}
-    className="group relative flex flex-col items-center gap-3 p-3 border border-white/10 backdrop-blur-2xl transition-all duration-500 overflow-hidden"
-    style={{
-      background: "linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01))",
-      borderRadius: 'var(--card-radius, 2rem)',
-      width: "180px",
-      boxShadow: "0 20px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.05)"
-    }}
+const CakeCard = ({ cake, index, onSelect }: { cake: CakeOption; index: number; onSelect: () => void }) => {
+  const isMobile = useIsMobile();
+  return (
+    <motion.button
+      whileHover={!isMobile ? { scale: 1.05, y: -10, rotateZ: 2 } : undefined}
+      whileTap={{ scale: 0.95 }}
+      onClick={onSelect}
+      className="group relative flex flex-col items-center gap-3 p-3 border border-white/10 backdrop-blur-2xl transition-all duration-500 overflow-hidden"
+      style={{
+        background: "linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01))",
+        borderRadius: 'var(--card-radius, 2rem)',
+        width: "180px",
+        boxShadow: "0 20px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.05)"
+      }}
   >
     <div className="relative w-full aspect-square rounded-2xl overflow-hidden mb-2">
       <img
         src={cake.image}
         alt={cake.name}
-        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        className={`w-full h-full object-cover transition-transform duration-700 ${!isMobile ? "group-hover:scale-110" : ""}`}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
       <div className="absolute bottom-3 right-3 text-3xl drop-shadow-2xl">
@@ -342,6 +347,8 @@ const CakeCard = ({ cake, index, onSelect }: { cake: CakeOption; index: number; 
 );
 
 export const CakeCutting = () => {
+  const isMobile = useIsMobile();
+  const reduceMotion = useReducedMotion();
   const [phase, setPhase] = useState<Phase>("select");
   const [selectedCake, setSelectedCake] = useState<CakeOption | null>(null);
   const [candlesLit, setCandlesLit] = useState(true);
@@ -420,6 +427,11 @@ export const CakeCutting = () => {
 
   const cake = selectedCake || CAKE_OPTIONS[0];
 
+  const lowMotion = isMobile || reduceMotion;
+  const dustCount = isMobile ? 16 : 40;
+  const sparkCount = isMobile ? 16 : 30;
+  const cakeSpring = { type: "spring", stiffness: isMobile ? 45 : 80, damping: isMobile ? 20 : 12 };
+
   return (
     <>
       {createPortal(
@@ -434,7 +446,7 @@ export const CakeCutting = () => {
                 background: "radial-gradient(circle at center, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.95) 100%)"
               }}
             >
-              <MagicDust count={40} />
+              <MagicDust count={dustCount} />
               
               <div className="relative w-full max-w-4xl px-4 flex flex-col items-center">
 
@@ -447,10 +459,10 @@ export const CakeCutting = () => {
                     <h2 className="font-display text-3xl sm:text-4xl text-white font-black text-center tracking-tighter animate-glow-pulse">
                       ✨ MAKE A WISH & BLOW ✨
                     </h2>
-                    <CakeSVG cake={cake} split={false} candlesLit={candlesLit} name={name} />
+                    <CakeSVG cake={cake} split={false} candlesLit={candlesLit} name={name} springConfig={cakeSpring} />
                     {phase === "blow-intro" && (
                       <motion.button
-                        whileHover={{ scale: 1.1 }}
+                        whileHover={!lowMotion ? { scale: 1.1 } : undefined}
                         whileTap={{ scale: 0.9 }}
                         onClick={handleBlow}
                         className="group relative px-12 py-5 rounded-full text-xl font-black text-white overflow-hidden shadow-[0_0_50px_rgba(255,255,255,0.2)]"
@@ -470,7 +482,7 @@ export const CakeCutting = () => {
                     className="flex flex-col items-center gap-12"
                   >
                     <div className="relative">
-                      <CakeSVG cake={cake} split={false} candlesLit={false} name={name} />
+                      <CakeSVG cake={cake} split={false} candlesLit={false} name={name} springConfig={cakeSpring} />
                       <motion.div 
                         animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
                         transition={{ duration: 2, repeat: Infinity }}
@@ -489,8 +501,8 @@ export const CakeCutting = () => {
                 {(phase === "knife-enter" || phase === "cutting" || phase === "burst") && (
                   <div className="relative flex flex-col items-center">
                     <KnifeSVG phase={phase} />
-                    {phase === "cutting" && <CutSparks count={30} color={cake.accent} />}
-                    <CakeSVG cake={cake} split={phase === "burst"} candlesLit={false} name={name} />
+                    {phase === "cutting" && <CutSparks count={sparkCount} color={cake.accent} />}
+                    <CakeSVG cake={cake} split={phase === "burst"} candlesLit={false} name={name} springConfig={cakeSpring} />
                     {phase === "burst" && (
                       <motion.div 
                         initial={{ scale: 0, opacity: 0 }}
@@ -503,7 +515,7 @@ export const CakeCutting = () => {
 
                 {phase === "quotes" && (
                   <div className="flex flex-col items-center gap-12 w-full">
-                    <CakeSVG cake={cake} split={true} candlesLit={false} name={name} />
+                    <CakeSVG cake={cake} split={true} candlesLit={false} name={name} springConfig={cakeSpring} />
                     <div className="text-center min-h-[150px] w-full max-w-2xl">
                       <AnimatePresence mode="wait">
                         {quoteIndex >= 0 && (

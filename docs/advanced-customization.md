@@ -27,13 +27,15 @@ If you set `VITE_BIRTHDAY_WISHER_NAME`, the letter will automatically append a p
 > With love,
 > Alex
 
+> NOTE: `VITE_WISHER_NAME` is also recognized as a backward-compatible alias.
+
 ---
 
 ## 🏗️ Section Visibility Toggles
-Control which parts of the experience are visible:
+Control which parts of the experience are visible. Both sections are enabled by default; set the value to `false` to hide them.
 ```env
-VITE_SHOW_CAKE_SECTION=true    # Show/Hide the interactive cake cutting
-VITE_SHOW_VIDEO_SECTION=true   # Show/Hide the video gallery
+VITE_SHOW_CAKE_SECTION=true    # Enable or disable the interactive cake cutting
+VITE_SHOW_VIDEO_SECTION=true   # Enable or disable the video gallery
 ```
 
 ---
@@ -52,6 +54,7 @@ The engine now includes a gamified trivia section about the birthday person.
 ### Customizing Questions
 The quiz automatically adapts based on:
 - `VITE_BIRTHDAY_INTERESTS`: Adds questions about their hobbies.
+- `VITE_FAVORITE_ITEMS`: Alias for interests when you want a shorter key.
 - `VITE_BIRTHDAY_RELATIONSHIP`: Adds emotional or funny questions about your bond.
 
 **Example Setup:**
@@ -75,7 +78,17 @@ VITE_SPECIAL_MEMORIES="Our First Coffee;https://i.imgur.com/example1.jpg|The Nig
 
 ---
 
-## 🎬 Final Surprise Video (v2.5)
+## � Hidden Gift Activation (New)
+The experience now includes a playful surprise gift panel in the Wishes section. The code shown there is generated from your relationship theme and favorite interests, so the gift always feels customized.
+
+**What to expect:**
+- A secret gift panel appears in the Wishes section.
+- Tapping the gift opens a surprise overlay.
+- The code is generated from your template, relationship, and interests.
+
+---
+
+## �🎬 Final Surprise Video (v2.5)
 Add a dedicated video reveal at the very end of the journey.
 **Variable**: `VITE_FINAL_VIDEO_URL`
 
@@ -86,11 +99,15 @@ VITE_FINAL_VIDEO_URL="https://www.youtube.com/embed/dQw4w9WgXcQ"
 > [!TIP]
 > For YouTube, use the `/embed/` link format for the best cinematic experience.
 
+> Alternate video support: add up to three memory videos with `VITE_VIDEO_1`, `VITE_VIDEO_2`, and `VITE_VIDEO_3`.
+
 ---
 
 ## 🎨 Global "Pure Reality" Theming
 Customize the entire feel of the website with one color.
 **Variable**: `VITE_FAVORITE_COLOR`
+
+> Alias: `VITE_BIRTHDAY_COLOR` is also recognized.
 
 **Example (Midnight Blue):**
 ```env
@@ -108,6 +125,12 @@ If you want to optimize for different devices:
 | `VITE_PARTICLE_COUNT` | `100` | Super immersive on high-end PCs |
 | `VITE_ANIMATION_SPEED` | `slow` | More emotional, poetic pacing |
 | `VITE_ANIMATION_SPEED` | `fast` | High energy, exciting party vibe |
+
+### Mobile-friendly defaults
+The engine now detects mobile devices automatically and reduces motion intensity, tilt, confetti count, and glow effects to keep the experience smooth.
+- Mobile users receive simplified hover states and lower particle loads.
+- Photo gallery tilt is disabled on phones.
+- Cake cutting and surprise animations are tuned for lower-end devices.
 
 ---
 
@@ -132,7 +155,6 @@ VITE_SHOW_VIDEO_SECTION=true
 ---
 
 *This engine is maintained by **Naboraj Sarkar**. Ensure you keep the authorship intact in the codebase while personalizing the website.*
-3.  **Balloons**: Clicking the main greeting text or floating emojis adds more floating balloons to the scene.
 
 ---
 

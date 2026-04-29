@@ -10,7 +10,7 @@
  */
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, useReducedMotion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useConfetti } from "./Confetti";
 import { Balloons } from "./Balloons";
@@ -49,6 +49,8 @@ export const MainBirthday = () => {
   const { config, getMood } = useBirthdayStore();
   const { name, age, customMessage, relationship, favoriteColor, gender, senderName } = config;
   const isMobile = useIsMobile();
+  const reduceMotion = useReducedMotion();
+  const shouldAnimate = !isMobile && !reduceMotion;
   const mood = getMood();
   const letterSignoff = senderName ? `\n\nWith love,\n${senderName}` : '';
   const primaryColor = favoriteColor || '#FF6B6B';
@@ -83,6 +85,7 @@ export const MainBirthday = () => {
   const springY = useSpring(mouseY, { damping: 20, stiffness: 150 });
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    if (!shouldAnimate) return;
     const { clientX, clientY } = e;
     const moveX = (clientX - window.innerWidth / 2) / 25;
     const moveY = (clientY - window.innerHeight / 2) / 25;
@@ -162,7 +165,7 @@ export const MainBirthday = () => {
       playReveal();
       fireCannon();
       fireStars();
-      fireConfetti({ particleCount: 500, spread: 200 });
+      fireConfetti({ particleCount: isMobile ? 120 : 500, spread: isMobile ? 140 : 200 });
       if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 300]);
       setTimeout(() => setMegaSurprise(false), 3000);
       setCakeClicks(0);
@@ -197,14 +200,18 @@ export const MainBirthday = () => {
     visible: { y: 0, opacity: 1, filter: "blur(0px)", transition: { duration: 0.8, ease: "easeOut" } },
   };
 
+  const heroMotionStyle = shouldAnimate ? { x: springX, y: springY } : { x: 0, y: 0 };
+  const sparkleCount = isMobile ? 8 : 15;
+  const balloonCount = isMobile ? 7 : 15;
+
   return (
     <div
-      onMouseMove={handleMouseMove}
+      onMouseMove={shouldAnimate ? handleMouseMove : undefined}
       className={`min-h-screen transition-opacity duration-1000 w-full max-w-[100vw] overflow-x-hidden ${visible ? "opacity-100" : "opacity-0"} ${megaSurprise ? "animate-screen-shake" : ""}`}
       style={{ background: 'transparent' }}
     >
-      <Balloons count={15} />
-      <Sparkles count={15} />
+      <Balloons count={balloonCount} />
+      <Sparkles count={sparkleCount} />
 
       {/* Mega Surprise Overlay */}
       {megaSurprise && (
@@ -245,7 +252,7 @@ export const MainBirthday = () => {
         <motion.div variants={itemVariants} className="mb-6 relative z-10">
           <div className="flex justify-center mb-8"><HeartProgression stage={4} /></div>
           <motion.div 
-            whileHover={{ scale: 1.2, rotate: relationship === 'friend' ? [0, -10, 10, 0] : [0, -5, 5, 0] }}
+            whileHover={shouldAnimate ? { scale: 1.2, rotate: relationship === 'friend' ? [0, -10, 10, 0] : [0, -5, 5, 0] } : undefined}
             whileTap={{ scale: 0.9 }}
             className="text-8xl md:text-[10rem] mb-6 cursor-pointer drop-shadow-[0_0_50px_var(--color-primary)]" 
             onClick={handleCakeClick}
@@ -409,7 +416,7 @@ export const MainBirthday = () => {
           <motion.button
             type="button"
             onClick={() => { setGiftOpened(true); playBoom(); }}
-            whileHover={!isMobile ? { scale: 1.02 } : undefined}
+            whileHover={shouldAnimate ? { scale: 1.02 } : undefined}
             whileTap={{ scale: 0.98 }}
             transition={{ duration: 0.3 }}
             className="w-full rounded-[3rem] border border-white/10 bg-gradient-to-r from-primary/15 to-transparent p-8 text-left shadow-2xl backdrop-blur-3xl hover:border-primary/40"
@@ -418,7 +425,7 @@ export const MainBirthday = () => {
               <div>
                 <p className="text-2xl md:text-3xl font-display font-black text-white">🎁 Hidden Gift Code</p>
                 <p className="mt-3 text-sm md:text-base text-foreground/70 max-w-2xl leading-relaxed">
-                  Tap the gift to unlock a surprise activation based on your relationship theme and favorite interests. This is a special moment for the final page.
+                  First we throw you the party, then we reveal the gift — because the best celebrations are in two acts. Tap the gift to unlock a fun surprise that matches your relationship theme and favorite interests.
                 </p>
               </div>
               <div className="inline-flex h-24 w-24 items-center justify-center rounded-3xl bg-white/10 text-4xl text-white shadow-[0_15px_50px_rgba(0,0,0,0.4)]">
@@ -454,7 +461,7 @@ export const MainBirthday = () => {
                 <div className="text-5xl">🎉</div>
                 <h3 className="text-4xl md:text-6xl font-black text-white">Surprise Unlocked!</h3>
                 <p className="text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto">
-                  You found the secret activation for your {relationship} theme. This reward is tuned to your favorite interests and the special code you unlocked.
+                  First the party sparkled, then the gift arrived. Your secret code is built from your relationship theme, your favorite interests, and a little playful mischief.
                 </p>
                 <div className="mx-auto inline-flex rounded-full bg-primary/10 px-6 py-4 text-2xl font-semibold text-primary shadow-[0_20px_60px_-30px_rgba(255,255,255,0.4)]">
                   {specialCode}
@@ -482,7 +489,7 @@ export const MainBirthday = () => {
         ].map((btn, i) => (
           <motion.button
             key={i}
-            whileHover={{ scale: 1.15, rotate: i % 2 === 0 ? 3 : -3 }}
+            whileHover={shouldAnimate ? { scale: 1.15, rotate: i % 2 === 0 ? 3 : -3 } : undefined}
             whileTap={{ scale: 0.9 }}
             onClick={() => { btn.action(); addEmoji(); }}
             className="px-12 py-6 rounded-full text-2xl font-black text-white shadow-2xl transition-all"
@@ -517,7 +524,7 @@ export const MainBirthday = () => {
             Ready for the sweetest moment? Let's make some magic happen! ✨
           </p>
           <motion.button
-            whileHover={{ scale: 1.05 }}
+            whileHover={shouldAnimate ? { scale: 1.05 } : undefined}
             whileTap={{ scale: 0.95 }}
             onClick={() => { addEmoji(); scrollToCake(); }}
             className="px-10 py-5 sm:px-12 sm:py-6 rounded-full text-xl sm:text-2xl font-black text-white shadow-2xl mb-12 sm:mb-20"

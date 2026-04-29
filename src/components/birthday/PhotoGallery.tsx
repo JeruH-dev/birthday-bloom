@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { PHOTO_ASSETS } from "@/config/birthday";
 import { useBirthdayStore } from "@/features/core/store/useBirthdayStore";
+import { useIsMobile } from "@/hooks/use-mobile";
 import photo1Default from "@/assets/photo-1.jpg";
 import photo2Default from "@/assets/photo-2.jpg";
 import photo3Default from "@/assets/photo-3.jpg";
@@ -12,11 +13,13 @@ export const PhotoGallery = () => {
   const [photoRatios, setPhotoRatios] = useState<Record<string, number>>({});
   const [supportsTilt, setSupportsTilt] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
+  const isMobile = useIsMobile();
   const { config, getAnimationPacing } = useBirthdayStore();
   const { relationship } = config;
 
   const animationPacing = getAnimationPacing();
-  const transitionDuration = isReducedMotion ? 0.8 : animationPacing === 'fast' ? 0.8 : animationPacing === 'slow' ? 1.5 : 1.2;
+  const reducedMotion = isReducedMotion || isMobile;
+  const transitionDuration = reducedMotion ? 0.9 : animationPacing === 'fast' ? 0.8 : animationPacing === 'slow' ? 1.5 : 1.2;
   const autoAdvanceDelay = animationPacing === 'fast' ? 4500 : animationPacing === 'slow' ? 8500 : 6000;
 
   const photos = useMemo(() => {
@@ -50,7 +53,7 @@ export const PhotoGallery = () => {
   const rotateY = useSpring(useTransform(x, [-100, 100], [-10, 10]), { damping: 20, stiffness: 150 });
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!supportsTilt) return;
+    if (!supportsTilt || isMobile) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -72,7 +75,7 @@ export const PhotoGallery = () => {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    setSupportsTilt(window.matchMedia('(pointer:fine)').matches);
+    setSupportsTilt(window.matchMedia('(pointer:fine)').matches && window.innerWidth >= 768);
     setIsReducedMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   }, []);
 
@@ -120,14 +123,14 @@ export const PhotoGallery = () => {
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           style={{ rotateX, rotateY, perspective: 1000 }}
-          className="relative group cursor-none"
+          className={`relative group ${isMobile ? '' : 'cursor-none'}`}
         >
           <AnimatePresence mode="wait">
             <motion.div
               key={activeIndex}
-              initial={{ opacity: 0, scale: 0.9, rotateY: -15, filter: "blur(20px)" }}
+              initial={isMobile ? { opacity: 1, scale: 1, rotateY: 0, filter: "blur(0px)" } : { opacity: 0, scale: 0.9, rotateY: -15, filter: "blur(20px)" }}
               animate={{ opacity: 1, scale: 1, rotateY: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, scale: 1.1, rotateY: 15, filter: "blur(20px)" }}
+              exit={isMobile ? undefined : { opacity: 0, scale: 1.1, rotateY: 15, filter: "blur(20px)" }}
               transition={{ duration: transitionDuration, ease: [0.22, 1, 0.36, 1] }}
               style={{ aspectRatio: photoRatios[photos[activeIndex].key] ?? 16 / 9 }}
               className="relative rounded-[3rem] overflow-hidden shadow-[0_60px_120px_-20px_rgba(0,0,0,0.8)] border border-white/10"
@@ -139,7 +142,7 @@ export const PhotoGallery = () => {
                 onLoad={(e) => handleImageLoad(photos[activeIndex].key, e)}
                 onError={(e) => { (e.target as HTMLImageElement).src = photos[activeIndex].fallback; }}
                 loading="lazy"
-                className="w-full h-full object-cover transition-transform duration-[3000ms] group-hover:scale-110"
+                className={`w-full h-full object-cover transition-transform duration-[3000ms] ${!isMobile ? "group-hover:scale-110" : ""}`}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90" />
               
@@ -188,7 +191,7 @@ export const PhotoGallery = () => {
             <motion.div
               key={i}
               onClick={() => setActiveIndex(i)}
-              whileHover={{ scale: 1.15, y: -10, rotate: i % 2 === 0 ? 2 : -2 }}
+              whileHover={!isMobile ? { scale: 1.15, y: -10, rotate: i % 2 === 0 ? 2 : -2 } : undefined}
               whileTap={{ scale: 0.9 }}
               className={`relative cursor-pointer rounded-3xl overflow-hidden w-28 h-28 md:w-40 md:h-40 border-4 transition-all duration-700 ${i === activeIndex ? "border-primary scale-110 shadow-[0_20px_50px_rgba(var(--color-primary-rgb),0.4)]" : "border-transparent opacity-30 hover:opacity-100"}`}
             >
