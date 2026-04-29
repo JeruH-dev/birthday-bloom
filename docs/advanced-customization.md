@@ -20,7 +20,12 @@ You can write an entire multi-line letter directly in your environment variables
 
 ```env
 VITE_BIRTHDAY_LETTER_OVERRIDE="My Dearest Name,\n\nToday is a celebration of you. From the moment we met, my life has been transformed by your light..."
+VITE_BIRTHDAY_WISHER_NAME="Alex"
 ```
+
+If you set `VITE_BIRTHDAY_WISHER_NAME`, the letter will automatically append a personalized signoff like:
+> With love,
+> Alex
 
 ---
 

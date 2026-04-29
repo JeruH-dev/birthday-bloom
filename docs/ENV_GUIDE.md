@@ -13,9 +13,12 @@ These variables define the heart of the experience.
 | `VITE_BIRTHDAY_GENDER` | `String` | `male` or `female` (Influences some defaults). |
 | `VITE_BIRTHDAY_DATE` | `ISO Date` | The target date/time (e.g., `2026-04-24T00:00:00`). |
 | `VITE_BIRTHDAY_RELATIONSHIP` | `String` | **CRITICAL**: `partner`, `friend`, or `family`. Controls the entire design template. |
+| `VITE_BIRTHDAY_WISHER_NAME` | `String` | The name of the person sending the wish, shown in the letter signoff. |
 | `VITE_BIRTHDAY_COLOR` | `Hex` | The main accent color (e.g., `#FF6B6B`). |
 | `VITE_BIRTHDAY_INTERESTS` | `CSV` | Comma-separated list (e.g., `Gaming,Coding,Cars`). |
 | `VITE_BIRTHDAY_CUSTOM_MESSAGE` | `String` | The long message shown in the final card. |
+| `VITE_BIRTHDAY_LETTER_TITLE` | `String` | Optional title for the emotional letter card. |
+| `VITE_BIRTHDAY_LETTER_OVERRIDE` | `String` | Override the generated letter body with your own multi-line message. |
 
 ---
 

@@ -9,8 +9,15 @@ import photo3Default from "@/assets/photo-3.jpg";
 export const PhotoGallery = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightbox, setLightbox] = useState<number | null>(null);
-  const { config } = useBirthdayStore();
+  const [photoRatios, setPhotoRatios] = useState<Record<string, number>>({});
+  const [supportsTilt, setSupportsTilt] = useState(false);
+  const [isReducedMotion, setIsReducedMotion] = useState(false);
+  const { config, getAnimationPacing } = useBirthdayStore();
   const { relationship } = config;
+
+  const animationPacing = getAnimationPacing();
+  const transitionDuration = isReducedMotion ? 0.8 : animationPacing === 'fast' ? 0.8 : animationPacing === 'slow' ? 1.5 : 1.2;
+  const autoAdvanceDelay = animationPacing === 'fast' ? 4500 : animationPacing === 'slow' ? 8500 : 6000;
 
   const photos = useMemo(() => {
     const base = [
@@ -43,6 +50,7 @@ export const PhotoGallery = () => {
   const rotateY = useSpring(useTransform(x, [-100, 100], [-10, 10]), { damping: 20, stiffness: 150 });
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    if (!supportsTilt) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -55,12 +63,43 @@ export const PhotoGallery = () => {
     y.set(0);
   };
 
+  const handleImageLoad = (key: string, e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const { naturalWidth, naturalHeight } = e.currentTarget;
+    if (naturalWidth && naturalHeight) {
+      setPhotoRatios((prev) => ({ ...prev, [key]: naturalWidth / naturalHeight }));
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    setSupportsTilt(window.matchMedia('(pointer:fine)').matches);
+    setIsReducedMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }, []);
+
   useEffect(() => {
     if (lightbox !== null) return;
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % photos.length);
-    }, 6000);
+    }, autoAdvanceDelay);
     return () => clearInterval(interval);
+  }, [lightbox, photos.length, autoAdvanceDelay]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setLightbox(null);
+      }
+      if (lightbox !== null) {
+        if (event.key === 'ArrowRight') {
+          setActiveIndex((prev) => (prev + 1) % photos.length);
+        }
+        if (event.key === 'ArrowLeft') {
+          setActiveIndex((prev) => (prev - 1 + photos.length) % photos.length);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [lightbox, photos.length]);
 
   if (photos.length === 0) return null;
@@ -89,14 +128,17 @@ export const PhotoGallery = () => {
               initial={{ opacity: 0, scale: 0.9, rotateY: -15, filter: "blur(20px)" }}
               animate={{ opacity: 1, scale: 1, rotateY: 0, filter: "blur(0px)" }}
               exit={{ opacity: 0, scale: 1.1, rotateY: 15, filter: "blur(20px)" }}
-              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-              className="relative aspect-[16/9] md:aspect-[21/9] rounded-[3rem] overflow-hidden shadow-[0_60px_120px_-20px_rgba(0,0,0,0.8)] border border-white/10"
+              transition={{ duration: transitionDuration, ease: [0.22, 1, 0.36, 1] }}
+              style={{ aspectRatio: photoRatios[photos[activeIndex].key] ?? 16 / 9 }}
+              className="relative rounded-[3rem] overflow-hidden shadow-[0_60px_120px_-20px_rgba(0,0,0,0.8)] border border-white/10"
               onClick={() => setLightbox(activeIndex)}
             >
               <img
                 src={photos[activeIndex].src}
                 alt={photos[activeIndex].caption}
+                onLoad={(e) => handleImageLoad(photos[activeIndex].key, e)}
                 onError={(e) => { (e.target as HTMLImageElement).src = photos[activeIndex].fallback; }}
+                loading="lazy"
                 className="w-full h-full object-cover transition-transform duration-[3000ms] group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90" />

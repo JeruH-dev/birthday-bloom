@@ -275,8 +275,11 @@ The entire initialization process is controlled securely via the `.env` paradigm
 | `VITE_BIRTHDAY_GENDER` | NO | `"other"` | `"male"`, `"female"`, or `"other"`. |
 | `VITE_BIRTHDAY_DATE` | NO | `null` | The specific date of the birthday. |
 | `VITE_BIRTHDAY_RELATIONSHIP` | NO | `"partner"` | Options: `"partner"`, `"friend"`, `"family"`. This fundamentally changes the UI mood, colors, storytelling text, and emoji effects! |
+| `VITE_BIRTHDAY_WISHER_NAME` | NO | `""` | The birthday wish sender's name, shown at the end of the emotional letter. |
 | `VITE_FAVORITE_COLOR` | NO | `"#FF6B6B"` | A hex code defining the dynamic global theme, neon glows, and gradient backgrounds. |
 | `VITE_FAVORITE_ITEMS` | NO | `""` | Comma-separated list of interests/items to customize ambient particles. |
+| `VITE_BIRTHDAY_LETTER_TITLE` | NO | `""` | Optional heading for the emotional letter card. |
+| `VITE_BIRTHDAY_LETTER_OVERRIDE` | NO | `""` | Replace the generated letter body with your own multi-line letter. |
 | `VITE_CUSTOM_MESSAGE` | NO | `""` | A heartfelt, custom message to reveal with kinetic typography right before the grand cake reveal. |
 | `VITE_ALLOW_AUDIO` | NO | `true` | Allows default autoplay of background audio and SFX popping noises. |
 | `VITE_VIDEO_1`, `VITE_VIDEO_2`, `VITE_VIDEO_3` | NO | `""` | Adds video links (YouTube or MP4) to the final cinematic Video Gallery at the bottom of the page. |
@@ -289,6 +292,7 @@ VITE_BIRTHDAY_AGE="25"
 VITE_BIRTHDAY_GENDER="female"
 VITE_BIRTHDAY_DATE="2026-10-15"
 VITE_BIRTHDAY_RELATIONSHIP="partner"
+VITE_BIRTHDAY_WISHER_NAME="Alex"
 VITE_FAVORITE_COLOR="#00C2FF"
 VITE_FAVORITE_ITEMS="coffee, stars, music"
 VITE_CUSTOM_MESSAGE="You mean the universe to me."

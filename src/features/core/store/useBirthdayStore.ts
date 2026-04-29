@@ -21,6 +21,7 @@ export interface BirthdayConfig {
   animationSpeed?: 'slow' | 'moderate' | 'fast';
   particleCount?: number;
   videos?: string[];
+  senderName?: string;
   letterTitle?: string;
   letterOverride?: string;
   showCakeSection?: boolean;
@@ -52,6 +53,7 @@ const envRelationship: RelationshipType =
 
 const envColor = import.meta.env.VITE_BIRTHDAY_COLOR || import.meta.env.VITE_FAVORITE_COLOR || '#FF6B6B';
 const envMessage = import.meta.env.VITE_BIRTHDAY_CUSTOM_MESSAGE || import.meta.env.VITE_CUSTOM_MESSAGE || '';
+const envSenderName = import.meta.env.VITE_BIRTHDAY_WISHER_NAME || import.meta.env.VITE_WISHER_NAME || '';
 const envAge = import.meta.env.VITE_BIRTHDAY_AGE ? parseInt(import.meta.env.VITE_BIRTHDAY_AGE, 10) : null;
 const envGender = (import.meta.env.VITE_BIRTHDAY_GENDER as GenderType) || 'other';
 
@@ -98,6 +100,7 @@ export const useBirthdayStore = create<BirthdayStore>((set, get) => ({
     favoriteColor: envColor,
     interests: envItems,
     customMessage: envMessage,
+    senderName: envSenderName,
     birthdayDate: envDate,
     animationSpeed: (import.meta.env.VITE_ANIMATION_SPEED as any) || null,
     particleCount: import.meta.env.VITE_PARTICLE_COUNT ? parseInt(import.meta.env.VITE_PARTICLE_COUNT, 10) : 25,

@@ -45,8 +45,9 @@ export const MainBirthday = () => {
 
   // Dynamic Store
   const { config, getMood } = useBirthdayStore();
-  const { name, age, customMessage, relationship, favoriteColor, gender } = config;
+  const { name, age, customMessage, relationship, favoriteColor, gender, senderName } = config;
   const mood = getMood();
+  const letterSignoff = senderName ? `\n\nWith love,\n${senderName}` : '';
   const primaryColor = favoriteColor || '#FF6B6B';
   const bigWishes = useMemo(() => getBigWishes(name, relationship, gender, config.interests || []), [name, relationship, gender, config.interests]);
 
@@ -317,7 +318,9 @@ export const MainBirthday = () => {
                 {config.letterTitle || "A Special Letter Just for You 💌"}
               </h4>
               <div className="text-left text-lg md:text-xl leading-relaxed whitespace-pre-line font-light">
-                {config.letterOverride || getHighlySpecificLetter(name, relationship, gender, config.interests)}
+                {config.letterOverride
+                  ? `${config.letterOverride}${letterSignoff}`
+                  : `${getHighlySpecificLetter(name, relationship, gender, config.interests)}${letterSignoff}`}
               </div>
             </div>
           </div>
