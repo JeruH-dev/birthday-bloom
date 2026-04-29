@@ -474,15 +474,15 @@ export const MainBirthday = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ duration: 0.35 }}
-              className="relative w-full max-w-3xl rounded-[2.5rem] border border-white/10 bg-black/90 p-8 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.9)]"
+              className="relative w-full max-w-3xl rounded-[2.5rem] border border-white/10 bg-black/90 p-6 sm:p-8 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.9)] max-h-[calc(100vh-4rem)] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {giftStage === 'party' ? (
-                <div className="flex flex-col gap-6 text-center">
+                <div className="flex flex-col gap-6 text-center min-h-[42vh] justify-center">
                   <div className="text-6xl">🎂🎉✨</div>
                   <h3 className="text-4xl md:text-6xl font-black text-white">The party is teasing the surprise!</h3>
-                  <p className="text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto">
-                    The crowd is cheering, the lights are flashing, and the room is full of anticipation. Hold on tight — the gift reveal is warming up behind the celebration.
+                  <p className="text-lg md:text-xl text-white/85 max-w-xl mx-auto leading-relaxed">
+                    The crowd is cheering, the lights are flashing, and the celebration message is made to stay visible on every screen. Watch the party tease before the gift reveal arrives.
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
                     {[
