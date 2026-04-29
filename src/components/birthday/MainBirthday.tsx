@@ -99,11 +99,12 @@ export const MainBirthday = () => {
     setGiftStage('party');
     playBoom();
     fireConfetti();
+    fireStars();
     if (giftTimerRef.current) window.clearTimeout(giftTimerRef.current);
     giftTimerRef.current = window.setTimeout(() => {
       setGiftStage('open');
       giftTimerRef.current = null;
-    }, 1800);
+    }, 2000);
   };
 
   useEffect(() => {
@@ -444,7 +445,7 @@ export const MainBirthday = () => {
               <div>
                 <p className="text-2xl md:text-3xl font-display font-black text-white">🎁 Hidden Gift Code</p>
                 <p className="mt-3 text-sm md:text-base text-foreground/70 max-w-2xl leading-relaxed">
-                  First we throw you the party, then we reveal the gift — because the best celebrations are in two acts. Tap the gift to unlock a fun surprise that matches your relationship theme and favorite interests.
+                  The party starts first, the crowd is hyped, and only then does the gift reveal open. Tap now to trigger the tease, light the dance floor, and keep the surprise waiting for its perfect moment.
                 </p>
               </div>
               <div className="inline-flex h-24 w-24 items-center justify-center rounded-3xl bg-white/10 text-4xl text-white shadow-[0_15px_50px_rgba(0,0,0,0.4)]">
@@ -478,13 +479,24 @@ export const MainBirthday = () => {
             >
               {giftStage === 'party' ? (
                 <div className="flex flex-col gap-6 text-center">
-                  <div className="text-5xl">🎂🎉✨</div>
-                  <h3 className="text-4xl md:text-6xl font-black text-white">First, the party!</h3>
+                  <div className="text-6xl">🎂🎉✨</div>
+                  <h3 className="text-4xl md:text-6xl font-black text-white">The party is teasing the surprise!</h3>
                   <p className="text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto">
-                    Cake is on the table, the lights are sparkling, and the celebration is warming up. Your gift reveal arrives in just a moment.
+                    The crowd is cheering, the lights are flashing, and the room is full of anticipation. Hold on tight — the gift reveal is warming up behind the celebration.
                   </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+                    {[
+                      { icon: '🎶', label: 'Music builds' },
+                      { icon: '🔥', label: 'Crowd hype' },
+                      { icon: '✨', label: 'Gift tease' }
+                    ].map((item) => (
+                      <div key={item.label} className="rounded-3xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80">
+                        <span className="mr-2">{item.icon}</span>{item.label}
+                      </div>
+                    ))}
+                  </div>
                   <div className="mx-auto inline-flex rounded-full bg-white/10 px-6 py-4 text-2xl font-semibold text-white shadow-[0_20px_60px_-30px_rgba(255,255,255,0.4)]">
-                    Party first, gift next...
+                    Pataka mood activated.
                   </div>
                 </div>
               ) : (
