@@ -3,11 +3,13 @@ import { useBirthdayStore } from "@/features/core/store/useBirthdayStore";
 import { useSoundManager } from "./SoundManager";
 import { Heart, Stars, Video, Sparkles, Camera } from "lucide-react";
 import { useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const FinalSurprise = () => {
   const { config } = useBirthdayStore();
   const { playReveal, playBoom } = useSoundManager();
   const [revealed, setRevealed] = useState(false);
+  const isMobile = useIsMobile();
   
   const memories = config.specialMemories || [];
   const primaryColor = config.favoriteColor || "#ff0080";
@@ -61,14 +63,15 @@ export const FinalSurprise = () => {
         {/* Final Video Surprise */}
         {config.finalVideoUrl && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: isMobile ? 1 : 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="relative max-w-4xl mx-auto rounded-[3rem] overflow-hidden border border-white/20 shadow-[0_0_100px_-20px_var(--color-primary)] bg-black/40 backdrop-blur-3xl"
+            className={isMobile ? "relative max-w-4xl mx-auto rounded-[2rem] overflow-hidden border border-white/20 shadow-[0_0_80px_-20px_var(--color-primary)] bg-black/70 backdrop-blur-xl" : "relative max-w-4xl mx-auto rounded-[3rem] overflow-hidden border border-white/20 shadow-[0_0_100px_-20px_var(--color-primary)] bg-black/40 backdrop-blur-3xl"}
           >
             <div className="aspect-video w-full">
               <iframe
                 src={config.finalVideoUrl.includes('youtube.com') ? `${config.finalVideoUrl}?autoplay=0&controls=1&rel=0` : config.finalVideoUrl}
+                loading="lazy"
                 className="w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
@@ -89,8 +92,8 @@ export const FinalSurprise = () => {
           className="mt-40 text-center space-y-12 pb-40"
         >
           <motion.div
-            animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity }}
+            animate={isMobile ? { scale: [1, 1.05, 1], rotate: [0, 0, 0] } : { scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
+            transition={{ duration: isMobile ? 6 : 4, repeat: Infinity, ease: "easeInOut" }}
             className="inline-block"
           >
             <Heart size={80} fill={primaryColor} className="text-primary drop-shadow-[0_0_30px_var(--color-primary)]" />
@@ -107,10 +110,10 @@ export const FinalSurprise = () => {
             </p>
           </div>
 
-          <div className="flex justify-center gap-8 text-white/20">
-            <Stars size={32} className="animate-spin-slow" />
-            <Sparkles size={32} className="animate-pulse" />
-            <Video size={32} className="animate-bounce" />
+          <div className={`flex justify-center gap-8 text-white/20 ${isMobile ? 'opacity-70' : ''}`}>
+            <Stars size={32} className={isMobile ? "" : "animate-spin-slow"} />
+            <Sparkles size={32} className={isMobile ? "" : "animate-pulse"} />
+            <Video size={32} className={isMobile ? "" : "animate-bounce"} />
           </div>
         </motion.div>
       </div>

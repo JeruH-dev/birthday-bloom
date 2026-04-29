@@ -5,6 +5,7 @@ import { CinematicIntro } from "@/components/birthday/CinematicIntro";
 import { MainBirthday } from "@/components/birthday/MainBirthday";
 import { useBirthdayStore } from "@/features/core/store/useBirthdayStore";
 import { useDynamicTheme } from "@/features/core/theme/useDynamicTheme";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { FloatingElements } from "@/components/birthday/FloatingElements";
 import { MorphingElements } from "@/components/birthday/MorphingElements";
 import { EnhancedFloatingElements } from "@/components/birthday/EnhancedFloatingElements";
@@ -18,6 +19,7 @@ type Phase = "splash" | "intro" | "main";
 
 const Index = () => {
   const [phase, setPhase] = useState<Phase>("splash");
+  const isMobile = useIsMobile();
   
   // Apply the dynamic theme globally to the body/app
   useDynamicTheme();
@@ -34,10 +36,10 @@ const Index = () => {
       <AnimatedGradient />
       {phase === "main" && (
         <>
-          <SparkleRain intensity={15} />
-          <FireflyEffect intensity={12} />
-          <FloatingOrbs count={6} />
-          <ShootingStars count={8} />
+          <SparkleRain intensity={isMobile ? 8 : 15} />
+          <FireflyEffect intensity={isMobile ? 7 : 12} />
+          <FloatingOrbs count={isMobile ? 4 : 6} />
+          <ShootingStars count={isMobile ? 4 : 8} />
         </>
       )}
 

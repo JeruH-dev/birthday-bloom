@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import { useBirthdayStore } from "@/features/core/store/useBirthdayStore";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const VideoGallery = () => {
   const { config } = useBirthdayStore();
+  const isMobile = useIsMobile();
   const videos = config.videos || [];
 
   if (!videos || videos.length === 0) return null;
@@ -34,10 +36,10 @@ export const VideoGallery = () => {
           return (
             <motion.div
               key={i}
-              initial={{ opacity: 0, scale: 0.9, y: 50 }}
-              whileInView={{ opacity: 1, scale: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.8, delay: i * 0.2, ease: "easeOut" }}
+              initial={isMobile ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.9, y: 50 }}
+              whileInView={isMobile ? undefined : { opacity: 1, scale: 1, y: 0 }}
+              viewport={isMobile ? undefined : { once: true, margin: "-50px" }}
+              transition={{ duration: isMobile ? 1.2 : 0.8, delay: i * 0.2, ease: "easeOut" }}
               className="relative aspect-video rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 bg-black/50 backdrop-blur-xl group"
             >
               {isVideoFile ? (
@@ -45,12 +47,14 @@ export const VideoGallery = () => {
                   src={url} 
                   controls 
                   playsInline
+                  loading="lazy"
                   className="w-full h-full object-contain"
                   preload="metadata"
                 />
               ) : (
                 <iframe
                   src={embedUrl}
+                  loading="lazy"
                   className="w-full h-full border-none"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen

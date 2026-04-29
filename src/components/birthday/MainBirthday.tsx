@@ -11,6 +11,7 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useConfetti } from "./Confetti";
 import { Balloons } from "./Balloons";
 import { Sparkles } from "./Sparkles";
@@ -39,6 +40,7 @@ export const MainBirthday = () => {
   const [emojis, setEmojis] = useState<{ id: number; emoji: string; x: number }[]>([]);
   const [cakeClicks, setCakeClicks] = useState(0);
   const [megaSurprise, setMegaSurprise] = useState(false);
+  const [giftOpened, setGiftOpened] = useState(false);
   
   const { fireConfetti, fireCannon, fireStars } = useConfetti();
   const { playReveal, playPop, playBoom, playWhoosh, setBgVolume } = useSoundManager();
@@ -46,10 +48,33 @@ export const MainBirthday = () => {
   // Dynamic Store
   const { config, getMood } = useBirthdayStore();
   const { name, age, customMessage, relationship, favoriteColor, gender, senderName } = config;
+  const isMobile = useIsMobile();
   const mood = getMood();
   const letterSignoff = senderName ? `\n\nWith love,\n${senderName}` : '';
   const primaryColor = favoriteColor || '#FF6B6B';
   const bigWishes = useMemo(() => getBigWishes(name, relationship, gender, config.interests || []), [name, relationship, gender, config.interests]);
+
+  const specialCode = useMemo(() => {
+    const template = relationship === 'partner' ? 'LOVE' : relationship === 'friend' ? 'LEGEND' : 'HOME';
+    const interestMap = [
+      { key: 'car', code: 'RIDE' },
+      { key: 'music', code: 'BEATS' },
+      { key: 'coding', code: 'CODE' },
+      { key: 'gaming', code: 'PLAY' },
+      { key: 'travel', code: 'TRIP' },
+      { key: 'food', code: 'FEAST' },
+      { key: 'art', code: 'ART' },
+      { key: 'space', code: 'STAR' },
+      { key: 'nature', code: 'BLOOM' },
+    ];
+    const matchedInterest = config.interests?.map((interest) => interest.toLowerCase().trim()).find((interest) =>
+      interestMap.some((item) => interest.includes(item.key))
+    );
+    const interestTag = matchedInterest
+      ? interestMap.find((item) => matchedInterest.includes(item.key))?.code
+      : 'SPARK';
+    return `${template}-${interestTag}-${String(new Date().getFullYear()).slice(-2)}`;
+  }, [relationship, config.interests]);
 
   // Magnetic Effect for Buttons
   const mouseX = useMotionValue(0);
@@ -364,7 +389,7 @@ export const MainBirthday = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15 }}
-              whileHover={{ y: -15, scale: 1.03, rotate: i % 2 === 0 ? 1 : -1, boxShadow: `0 30px 60px -15px ${primaryColor}40` }}
+              whileHover={!isMobile ? { y: -15, scale: 1.03, rotate: i % 2 === 0 ? 1 : -1, boxShadow: `0 30px 60px -15px ${primaryColor}40` } : undefined}
               className="p-10 backdrop-blur-3xl border cursor-pointer group bg-gradient-to-br from-white/10 to-transparent border-white/10"
               style={{ borderRadius: 'var(--card-radius, 2.5rem)' }}
               onClick={addEmoji}
@@ -378,6 +403,75 @@ export const MainBirthday = () => {
           ))}
         </div>
       </section>
+
+      <section className="relative z-20 px-4 pb-20">
+        <div className="max-w-6xl mx-auto">
+          <motion.button
+            type="button"
+            onClick={() => { setGiftOpened(true); playBoom(); }}
+            whileHover={!isMobile ? { scale: 1.02 } : undefined}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.3 }}
+            className="w-full rounded-[3rem] border border-white/10 bg-gradient-to-r from-primary/15 to-transparent p-8 text-left shadow-2xl backdrop-blur-3xl hover:border-primary/40"
+          >
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+              <div>
+                <p className="text-2xl md:text-3xl font-display font-black text-white">🎁 Hidden Gift Code</p>
+                <p className="mt-3 text-sm md:text-base text-foreground/70 max-w-2xl leading-relaxed">
+                  Tap the gift to unlock a surprise activation based on your relationship theme and favorite interests. This is a special moment for the final page.
+                </p>
+              </div>
+              <div className="inline-flex h-24 w-24 items-center justify-center rounded-3xl bg-white/10 text-4xl text-white shadow-[0_15px_50px_rgba(0,0,0,0.4)]">
+                🎁
+              </div>
+            </div>
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/5 px-4 py-2 text-sm text-white/75">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10">✨</span>
+              Your code: <span className="font-semibold text-primary">{specialCode}</span>
+            </div>
+          </motion.button>
+        </div>
+      </section>
+
+      <AnimatePresence>
+        {giftOpened && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-3xl p-6"
+            onClick={() => setGiftOpened(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.35 }}
+              className="relative w-full max-w-3xl rounded-[2.5rem] border border-white/10 bg-black/90 p-8 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.9)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex flex-col gap-6 text-center">
+                <div className="text-5xl">🎉</div>
+                <h3 className="text-4xl md:text-6xl font-black text-white">Surprise Unlocked!</h3>
+                <p className="text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto">
+                  You found the secret activation for your {relationship} theme. This reward is tuned to your favorite interests and the special code you unlocked.
+                </p>
+                <div className="mx-auto inline-flex rounded-full bg-primary/10 px-6 py-4 text-2xl font-semibold text-primary shadow-[0_20px_60px_-30px_rgba(255,255,255,0.4)]">
+                  {specialCode}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { setGiftOpened(false); fireConfetti(); }}
+                  className="mx-auto rounded-full bg-primary px-10 py-4 text-xl font-black text-black transition-all hover:scale-105"
+                >
+                  Close Gift
+                </button>
+              </div>
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/90 to-transparent" />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Magnetic Buttons Section */}
       <section className="relative z-20 flex flex-wrap justify-center gap-8 px-4 pb-32">

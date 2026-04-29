@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import { SparkleEffect } from "./components/birthday/SparkleEffect";
 import { CelebrationOverlay } from "./components/birthday/CelebrationOverlay";
 import { PartyElements } from "./components/birthday/PartyElements";
+import { Balloons } from "./components/birthday/Balloons";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
         <Sonner />
         <SparkleEffect />
         <PartyElements />
+        <Balloons count={6} />
         <CelebrationOverlay />
         <BrowserRouter>
           <Routes>

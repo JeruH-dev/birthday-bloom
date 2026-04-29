@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useBirthdayStore } from "@/features/core/store/useBirthdayStore";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Balloon {
   id: number;
@@ -15,6 +16,8 @@ export const Balloons = ({ count = 20 }: { count?: number }) => {
   const [balloons, setBalloons] = useState<Balloon[]>([]);
   const { config } = useBirthdayStore();
   const { relationship } = config;
+  const isMobile = useIsMobile();
+  const activeCount = isMobile ? Math.min(count, 8) : count;
 
   const colors = useMemo(() => {
     if (relationship === 'partner') return ["hsl(340, 85%, 60%)", "hsl(320, 70%, 50%)", "hsl(0, 80%, 55%)", "hsl(45, 100%, 70%)"];
@@ -24,7 +27,7 @@ export const Balloons = ({ count = 20 }: { count?: number }) => {
 
   useEffect(() => {
     setBalloons(
-      Array.from({ length: count }, (_, i) => ({
+      Array.from({ length: activeCount }, (_, i) => ({
         id: i,
         x: Math.random() * 100,
         color: colors[Math.floor(Math.random() * colors.length)],
@@ -34,7 +37,7 @@ export const Balloons = ({ count = 20 }: { count?: number }) => {
         rotate: Math.random() * 20 - 10,
       }))
     );
-  }, [count, colors]);
+  }, [activeCount, colors]);
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" style={{ perspective: "1000px" }}>
