@@ -39,10 +39,10 @@ export const ParticleBurst = ({ trigger }: { trigger: boolean }) => {
 
     setParticles(newParticles);
 
-    const animationFrames: number[] = [];
+    let frameId = 0;
     const animate = () => {
-      setParticles((prev) =>
-        prev
+      setParticles((prev) => {
+        const nextParticles = prev
           .map((p) => ({
             ...p,
             x: p.x + p.vx,
@@ -51,17 +51,19 @@ export const ParticleBurst = ({ trigger }: { trigger: boolean }) => {
             life: p.life - 0.02,
             vx: p.vx * 0.98,
           }))
-          .filter((p) => p.life > 0)
-      );
+          .filter((p) => p.life > 0);
 
-      if (particles.length > 0) {
-        animationFrames.push(requestAnimationFrame(animate));
-      }
+        if (nextParticles.length > 0) {
+          frameId = requestAnimationFrame(animate);
+        }
+
+        return nextParticles;
+      });
     };
 
-    animationFrames.push(requestAnimationFrame(animate));
+    frameId = requestAnimationFrame(animate);
 
-    return () => animationFrames.forEach(cancelAnimationFrame);
+    return () => cancelAnimationFrame(frameId);
   }, [trigger]);
 
   return (

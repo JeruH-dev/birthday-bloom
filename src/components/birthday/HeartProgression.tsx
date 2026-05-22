@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { Snowflake, Heart, Sparkles, Star } from "lucide-react";
 import { useBirthdayStore } from "@/features/core/store/useBirthdayStore";
 
@@ -96,12 +96,12 @@ const FourCornerMerge = ({ onDone }: { onDone: () => void }) => {
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(t5); };
   }, [onDone]);
 
-  const corners = [
+  const corners = useMemo(() => [
     { id: "tl", start: { x: "-60vw", y: "-60vh", rotate: -45 }, color: "hsl(330, 85%, 65%)" },
     { id: "tr", start: { x: "60vw", y: "-60vh", rotate: 45 }, color: "hsl(350, 80%, 60%)" },
     { id: "br", start: { x: "60vw", y: "60vh", rotate: 135 }, color: "hsl(330, 85%, 55%)" },
     { id: "bl", start: { x: "-60vw", y: "60vh", rotate: -135 }, color: "hsl(345, 85%, 62%)" },
-  ];
+  ], []);
 
   // Spawn trail particles by sampling heart element positions
   const spawnParticles = useCallback(() => {
@@ -131,7 +131,7 @@ const FourCornerMerge = ({ onDone }: { onDone: () => void }) => {
       const alive = prev.filter(p => now - p.born < 2200);
       return [...alive, ...newParticles].slice(-200);
     });
-  }, []);
+  }, [corners]);
 
   // Spawn particles during merging phase via rAF
   useEffect(() => {
@@ -151,8 +151,10 @@ const FourCornerMerge = ({ onDone }: { onDone: () => void }) => {
   }, [phase, spawnParticles]);
 
   // Fade out remaining particles
+  const hasParticles = particles.length > 0;
+
   useEffect(() => {
-    if (particles.length === 0) return;
+    if (!hasParticles) return;
     const interval = setInterval(() => {
       setParticles(prev => {
         const alive = prev.filter(p => Date.now() - p.born < 2200);
@@ -161,7 +163,7 @@ const FourCornerMerge = ({ onDone }: { onDone: () => void }) => {
       });
     }, 100);
     return () => clearInterval(interval);
-  }, [particles.length > 0]);
+  }, [hasParticles]);
 
   const isMerging = phase === "merging" || phase === "merged" || phase === "pop" || phase === "text";
   const isMerged = phase === "merged" || phase === "pop" || phase === "text";

@@ -159,6 +159,10 @@ export const MainBirthday = () => {
       space: ["🚀", "🪐", "🛸", "☄️", "🌌", "👽"]
     };
 
+    if (config.favoriteEmojis.length > 0) {
+      emojiList = [...emojiList, ...config.favoriteEmojis];
+    }
+
     // Inject interest emojis if any match
     if (config.interests && config.interests.length > 0) {
       config.interests.forEach(interest => {
@@ -327,8 +331,7 @@ export const MainBirthday = () => {
       {/* Components */}
       {/* <CakeCutting />  Move to end */}
 
-      {/* PhotoGallery */}
-      <PhotoGallery />
+      {config.showPhotoSection && <PhotoGallery />}
 
       {/* Message Card */}
       <section className="relative z-20 flex justify-center px-4 pb-32 pt-16">
@@ -402,8 +405,7 @@ export const MainBirthday = () => {
         </div>
       )}
 
-      {/* Birthday Quiz Section */}
-      <BirthdayQuiz />
+      {config.showQuizSection && <BirthdayQuiz />}
 
       {/* Wishes Section */}
       <section className="relative z-20 px-4 pb-32">
@@ -431,7 +433,7 @@ export const MainBirthday = () => {
         </div>
       </section>
 
-      <section className="relative z-20 px-4 pb-20">
+      {config.showGiftSection && <section className="relative z-20 px-4 pb-20">
         <div className="max-w-6xl mx-auto">
           <motion.button
             type="button"
@@ -458,7 +460,7 @@ export const MainBirthday = () => {
             </div>
           </motion.button>
         </div>
-      </section>
+      </section>}
 
       <AnimatePresence>
         {giftStage !== 'closed' && (
@@ -547,7 +549,7 @@ export const MainBirthday = () => {
         ))}
       </section>
 
-      <HeartTree delay={500} />
+      {config.showHeartTreeSection && <HeartTree delay={500} />}
       
       {config.showVideoSection && <VideoGallery />}
 
@@ -584,8 +586,7 @@ export const MainBirthday = () => {
       </section>
       )}
 
-      {/* Final Surprise & Emotional Closing */}
-      <FinalSurprise />
+      {config.showFinalSurprise && <FinalSurprise />}
 
       <footer className="relative z-20 text-center py-20 bg-black/40 w-full">
         <p className="mt-4 text-white/10 text-[10px] tracking-[0.5em] uppercase">

@@ -4,6 +4,19 @@
 **Version**: 3.0  
 **Last Updated**: May 2026
 
+Repository: [naborajs/birthday-bloom](https://github.com/naborajs/birthday-bloom)
+
+Env-first customization is the default path. Names, media, relationships, colors, sections, animation settings, accessibility, and family template metadata should be changed with `.env.local` whenever possible.
+
+## Essential Current Docs
+
+- [Complete env customization guide](./ENV_GUIDE.md)
+- [Family system](./family-system.md)
+- [Template architecture](./template-architecture.md)
+- [Developer guide](./developer-guide.md)
+- [Migration guide](./migration-guide.md)
+- [Troubleshooting](./troubleshooting.md)
+
 ---
 
 ## Quick Navigation
@@ -95,11 +108,11 @@
 3. Check: [advanced-customization.md](./advanced-customization.md) for advanced options
 4. Review: [config.example.ts](../src/config.example.ts) for full configuration examples
 
-### 👥 Creating Family Profiles (Brother/Sister)
-1. Read: [COMPLETE_SETUP_GUIDE.md](./COMPLETE_SETUP_GUIDE.md) - Family Templates section
-2. Study: Brother Template section (15 sections explained)
-3. Study: Sister Template section (15 sections explained)
-4. Reference: [config.example.ts](../src/config.example.ts) - Examples 3 & 4
+### 👥 Creating Family Profiles
+1. Read: [family-system.md](./family-system.md) for the current scalable family schema.
+2. Read: [template-architecture.md](./template-architecture.md) to understand inheritance and overrides.
+3. Use [ENV_GUIDE.md](./ENV_GUIDE.md) to customize relationship type, family metadata, and privacy from env.
+4. Reference: [config.example.ts](../src/config.example.ts) for typed examples.
 
 ### 🚀 Deploying to Production
 1. Read: [deployment.md](./deployment.md)
@@ -187,7 +200,7 @@ src/
 └── features/
     └── core/
         └── models/
-            ├── familyTemplates.ts   - Brother/Sister templates (NEW)
+            ├── familyTemplates.ts   - Scalable family template registry
             ├── dataModels.ts        - Enhanced data models (NEW)
             └── validators.ts        - Validation system
 ```

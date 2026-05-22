@@ -235,7 +235,29 @@ export const CinematicIntro = ({ onComplete }: CinematicIntroProps) => {
       addTimer(() => { setScene("done"); onComplete(); }, endTime + 3500);
     }
 
-  }, [scene, speedMultiplier, age, storyLines, postChatLines, finalLines, onComplete, playType, playWhoosh, playReveal, playPop, playBoom, fireConfetti, fireCannon, fireStars]);
+  }, [
+    scene,
+    speedMultiplier,
+    age,
+    storyLines,
+    postChatLines,
+    finalLines,
+    onComplete,
+    addTimer,
+    clearTimers,
+    playType,
+    playWhoosh,
+    playReveal,
+    playPop,
+    playBoom,
+    fireConfetti,
+    fireCannon,
+    fireStars,
+    spawnEmojiBurst,
+    triggerFlash,
+    triggerRingPulse,
+    triggerShake,
+  ]);
 
   const handleChatComplete = useCallback(() => {
     playWhoosh();

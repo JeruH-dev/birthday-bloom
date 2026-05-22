@@ -5,6 +5,13 @@
  * Production-ready data structures with validation
  */
 
+import type {
+  FamilyMemberProfile,
+  FamilyMemberType,
+  PrivacyLevel,
+  RelationshipDirection,
+} from './familyTemplates';
+
 // ============================================================================
 // ENUMERATIONS & CONSTANTS
 // ============================================================================
@@ -14,6 +21,18 @@ export const RELATIONSHIP_TYPES = {
   FRIEND: 'friend',
   FAMILY: 'family',
   SIBLING: 'sibling',
+  BROTHER: 'brother',
+  SISTER: 'sister',
+  FATHER: 'father',
+  MOTHER: 'mother',
+  GRANDFATHER: 'grandfather',
+  GRANDMOTHER: 'grandmother',
+  UNCLE: 'uncle',
+  AUNT: 'aunt',
+  COUSIN: 'cousin',
+  SON: 'son',
+  DAUGHTER: 'daughter',
+  GUARDIAN: 'guardian',
   COLLEAGUE: 'colleague',
   MENTOR: 'mentor',
   CUSTOM: 'custom',
@@ -230,27 +249,35 @@ export interface EnhancedBirthdayConfig {
 
 export interface FamilyMember {
   id: string;
-  type: 'brother' | 'sister' | 'parent' | 'cousin' | 'extended';
+  type: FamilyMemberType;
   name: string;
-  dateOfBirth: Date;
-  profileData: Record<string, any>;
+  dateOfBirth?: Date;
+  profile: FamilyMemberProfile;
+  relationshipPath?: string[];
+  privacy?: PrivacyLevel;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface FamilyCollection {
   familyName: string;
+  version: string;
   members: FamilyMember[];
   relationships?: Array<{
     from: string;
     to: string;
-    type: string;
+    type: RelationshipDirection | string;
+    label?: string;
+    closenessLevel?: number;
   }>;
   sharedMemories?: Array<{
+    id: string;
     title: string;
     description: string;
-    date: Date;
+    date?: Date;
     participants: string[];
+    mediaIds?: string[];
+    privacy?: PrivacyLevel;
   }>;
 }
 

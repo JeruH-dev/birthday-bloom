@@ -6,7 +6,7 @@
 > 
 > **Now with Specialized Family Templates, Advanced Data Models, and Comprehensive Documentation**
 
-![Birthday Bloom Banner](https://raw.githubusercontent.com/naborajs/birthday-bloom-main/main/public/favicon.png)
+![Birthday Bloom Banner](https://raw.githubusercontent.com/naborajs/birthday-bloom/main/public/favicon.png)
 
 <h3>✨ The Ultimate Open-Source Cinematic Birthday Surprise ✨</h3>
 
@@ -15,6 +15,32 @@
   <a href="https://github.com/naborajs/birthday-bloom/blob/main/LICENSE"><img src="https://img.shields.io/github/license/naborajs/birthday-bloom?style=for-the-badge&color=4169e1" alt="License"></a>
   <a href="https://vercel.com"><img src="https://img.shields.io/badge/Deploy-Vercel-black?style=for-the-badge&logo=vercel" alt="Deploy"></a>
 </p>
+
+---
+
+## Start Here
+
+Birthday Bloom is now **env-first**: names, relationship type, messages, colors, photos, captions, videos, audio, visible sections, animation behavior, accessibility, and family-template metadata can be changed from `.env.local`.
+
+Repository: [naborajs/birthday-bloom](https://github.com/naborajs/birthday-bloom)
+
+**Important:** when this project says “env”, it means environment variables, usually stored in `.env.local` during local development or in the hosting provider’s Environment Variables/Secrets panel during deployment. These values are the intended customization layer. For normal changes, do not rewrite the app code.
+
+If you ask an AI coding agent to customize Birthday Bloom, tell it this first:
+
+> This project is already built to be customized through env values. Before editing components or templates, check `.env.example` and `docs/ENV_GUIDE.md`, then tell me which env keys to update.
+
+Direct docs:
+
+- [Complete env customization guide](./docs/ENV_GUIDE.md)
+- [Quick start](./QUICK_START.md)
+- [Family system](./docs/family-system.md)
+- [Template architecture](./docs/template-architecture.md)
+- [Developer guide](./docs/developer-guide.md)
+- [Migration guide](./docs/migration-guide.md)
+- [Documentation index](./docs/DOCUMENTATION_INDEX.md)
+
+Copy `.env.example` to `.env.local`, change values, restart the dev server, and the experience updates without component edits.
 
 ---
 
@@ -43,10 +69,11 @@ Developed by **Naboraj Sarkar**, Birthday Bloom is an open-source gift to the co
 ### 🎉 Major Features
 
 #### 1. **Family Templates System** ⭐
-- 👨 **Brother Template**: 15 comprehensive sections (personality, interests, skills, sibling bond, dreams, etc.)
-- 👩 **Sister Template**: 15 unique sections (professional life, lifestyle, passions, relationships, etc.)
-- Factory functions for quick profile creation
-- Fully type-safe with TypeScript support
+- Dedicated Brother and Sister templates remain supported.
+- New templates: Father, Mother, Grandfather, Grandmother, Uncle, Aunt, Cousin, Son, Daughter, Guardian, Friend, and Custom Member.
+- Shared base schema with specialized relationship fields, dynamic custom fields, timeline/history, media, personal notes, relationship metadata, and privacy controls.
+- Env entry point through `VITE_FAMILY_MEMBER_TYPE`, `VITE_FAMILY_*`, and `VITE_FAMILY_PROFILE_JSON`.
+- Fully type-safe with TypeScript support.
 
 #### 2. **Enhanced Data Models**
 - `EnhancedBirthdayConfig` with 7 major sections (40+ options)

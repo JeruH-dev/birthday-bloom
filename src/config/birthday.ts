@@ -19,7 +19,7 @@ const envName = parseEnvStr(import.meta.env.VITE_BIRTHDAY_NAME);
 const envPhoto1 = parseEnvStr(import.meta.env.VITE_PHOTO_1);
 const envPhoto2 = parseEnvStr(import.meta.env.VITE_PHOTO_2);
 const envPhoto3 = parseEnvStr(import.meta.env.VITE_PHOTO_3);
-const envBgm = parseEnvStr(import.meta.env.VITE_BGM_URL);
+const envBgm = parseEnvStr(import.meta.env.VITE_BGM_URL) || parseEnvStr(import.meta.env.VITE_SOUND_URL);
 
 export const BIRTHDAY_NAME = envName ? envName : (config.birthdayName || "YOU");
 

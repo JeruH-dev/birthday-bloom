@@ -5,8 +5,31 @@
  */
 
 import { create } from 'zustand';
+import {
+  createFamilyMemberProfile,
+  type FamilyMemberProfile,
+  type FamilyMemberType,
+} from '../models/familyTemplates';
 
-export type RelationshipType = 'partner' | 'friend' | 'family' | 'sibling' | 'colleague' | 'mentor';
+export type RelationshipType =
+  | 'partner'
+  | 'friend'
+  | 'family'
+  | 'sibling'
+  | 'brother'
+  | 'sister'
+  | 'father'
+  | 'mother'
+  | 'grandfather'
+  | 'grandmother'
+  | 'uncle'
+  | 'aunt'
+  | 'cousin'
+  | 'son'
+  | 'daughter'
+  | 'guardian'
+  | 'colleague'
+  | 'mentor';
 export type GenderType = 'male' | 'female' | 'other';
 
 export interface BirthdayConfig {
@@ -15,19 +38,29 @@ export interface BirthdayConfig {
   gender: GenderType;
   relationship: RelationshipType;
   favoriteColor: string; // Hex code
+  favoriteEmojis: string[];
   interests: string[];
   customMessage: string;
   birthdayDate: Date | null;
   animationSpeed?: 'slow' | 'moderate' | 'fast';
+  animationIntensity?: 'low' | 'medium' | 'high';
   particleCount?: number;
+  photos?: string[];
+  photoCaptions?: string[];
   videos?: string[];
   senderName?: string;
   letterTitle?: string;
   letterOverride?: string;
   showCakeSection?: boolean;
+  showPhotoSection?: boolean;
+  showQuizSection?: boolean;
+  showHeartTreeSection?: boolean;
   showVideoSection?: boolean;
+  showFinalSurprise?: boolean;
+  showGiftSection?: boolean;
   finalVideoUrl?: string;
   specialMemories?: { text: string; image?: string }[];
+  familyProfile?: FamilyMemberProfile;
 }
 
 interface BirthdayStore {
@@ -39,22 +72,87 @@ interface BirthdayStore {
   getMood: () => 'romantic' | 'energetic' | 'warm';
 }
 
-const envName = import.meta.env.VITE_BIRTHDAY_NAME || '';
+const parseEnvString = (...values: unknown[]): string => {
+  for (const value of values) {
+    if (value === undefined || value === null) continue;
+    const parsed = String(value).trim();
+    if (parsed && parsed !== 'undefined' && parsed !== 'null') return parsed;
+  }
+  return '';
+};
+
+const parseEnvBoolean = (value: unknown, fallback: boolean): boolean => {
+  const parsed = parseEnvString(value).toLowerCase();
+  if (!parsed) return fallback;
+  if (['true', '1', 'yes', 'on', 'enabled'].includes(parsed)) return true;
+  if (['false', '0', 'no', 'off', 'disabled'].includes(parsed)) return false;
+  return fallback;
+};
+
+const parseEnvNumber = (value: unknown, fallback: number | null): number | null => {
+  const parsed = parseEnvString(value);
+  if (!parsed) return fallback;
+  const numberValue = Number.parseInt(parsed, 10);
+  return Number.isFinite(numberValue) ? numberValue : fallback;
+};
+
+const parseEnvList = (...values: unknown[]): string[] => {
+  const raw = parseEnvString(...values);
+  if (!raw) return [];
+
+  if (raw.trim().startsWith('[')) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed.map(String).map((item) => item.trim()).filter(Boolean);
+    } catch {
+      return [];
+    }
+  }
+
+  return raw
+    .split(/[,\n|]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+};
+
+const parseEnvJson = <T>(value: unknown): T | null => {
+  const raw = parseEnvString(value);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
+  }
+};
+
+const envName = parseEnvString(import.meta.env.VITE_BIRTHDAY_NAME);
 
 // Normalize Relationship
 const rawRel = (import.meta.env.VITE_BIRTHDAY_RELATIONSHIP || '').toLowerCase();
 const envRelationship: RelationshipType = 
   rawRel.includes('partner') || rawRel.includes('love') ? 'partner' :
   rawRel.includes('friend') || rawRel.includes('bestie') ? 'friend' :
-  rawRel.includes('sibling') || rawRel.includes('brother') || rawRel.includes('sister') ? 'sibling' :
+  rawRel.includes('brother') ? 'brother' :
+  rawRel.includes('sister') ? 'sister' :
+  rawRel.includes('father') || rawRel.includes('dad') ? 'father' :
+  rawRel.includes('mother') || rawRel.includes('mom') ? 'mother' :
+  rawRel.includes('grandfather') || rawRel.includes('grandpa') ? 'grandfather' :
+  rawRel.includes('grandmother') || rawRel.includes('grandma') ? 'grandmother' :
+  rawRel.includes('uncle') ? 'uncle' :
+  rawRel.includes('aunt') ? 'aunt' :
+  rawRel.includes('cousin') ? 'cousin' :
+  rawRel.includes('son') ? 'son' :
+  rawRel.includes('daughter') ? 'daughter' :
+  rawRel.includes('guardian') ? 'guardian' :
+  rawRel.includes('sibling') ? 'sibling' :
   rawRel.includes('colleague') || rawRel.includes('work') ? 'colleague' :
   rawRel.includes('mentor') || rawRel.includes('teacher') ? 'mentor' :
   'family';
 
-const envColor = import.meta.env.VITE_BIRTHDAY_COLOR || import.meta.env.VITE_FAVORITE_COLOR || '#FF6B6B';
-const envMessage = import.meta.env.VITE_BIRTHDAY_CUSTOM_MESSAGE || import.meta.env.VITE_CUSTOM_MESSAGE || '';
-const envSenderName = import.meta.env.VITE_BIRTHDAY_WISHER_NAME || import.meta.env.VITE_WISHER_NAME || '';
-const envAge = import.meta.env.VITE_BIRTHDAY_AGE ? parseInt(import.meta.env.VITE_BIRTHDAY_AGE, 10) : null;
+const envColor = parseEnvString(import.meta.env.VITE_BIRTHDAY_COLOR, import.meta.env.VITE_FAVORITE_COLOR) || '#FF6B6B';
+const envMessage = parseEnvString(import.meta.env.VITE_BIRTHDAY_CUSTOM_MESSAGE, import.meta.env.VITE_CUSTOM_MESSAGE);
+const envSenderName = parseEnvString(import.meta.env.VITE_BIRTHDAY_WISHER_NAME, import.meta.env.VITE_WISHER_NAME);
+const envAge = parseEnvNumber(import.meta.env.VITE_BIRTHDAY_AGE, null);
 const envGender = (import.meta.env.VITE_BIRTHDAY_GENDER as GenderType) || 'other';
 
 // Robust Date Parsing
@@ -69,27 +167,80 @@ try {
   envDate = null;
 }
 
-const envItems = import.meta.env.VITE_BIRTHDAY_INTERESTS || import.meta.env.VITE_FAVORITE_ITEMS 
-  ? (import.meta.env.VITE_BIRTHDAY_INTERESTS || import.meta.env.VITE_FAVORITE_ITEMS).split(',').map((s: string) => s.trim()) 
-  : [];
+const envItems = parseEnvList(import.meta.env.VITE_BIRTHDAY_INTERESTS, import.meta.env.VITE_FAVORITE_ITEMS);
+const envFavoriteEmojis = parseEnvList(import.meta.env.VITE_FAVORITE_EMOJIS, import.meta.env.VITE_BIRTHDAY_EMOJIS);
+const envPhotos = parseEnvList(
+  import.meta.env.VITE_PHOTOS,
+  [
+    import.meta.env.VITE_PHOTO_1,
+    import.meta.env.VITE_PHOTO_2,
+    import.meta.env.VITE_PHOTO_3,
+    import.meta.env.VITE_PHOTO_4,
+    import.meta.env.VITE_PHOTO_5,
+    import.meta.env.VITE_PHOTO_6,
+  ].filter(Boolean).join('|'),
+);
+const envPhotoCaptions = parseEnvList(import.meta.env.VITE_PHOTO_CAPTIONS);
 
 const envVideos = [
   import.meta.env.VITE_VIDEO_1,
   import.meta.env.VITE_VIDEO_2,
   import.meta.env.VITE_VIDEO_3,
-].filter(Boolean) as string[];
+].map(parseEnvString).filter(Boolean) as string[];
 
-const envLetterTitle = import.meta.env.VITE_BIRTHDAY_LETTER_TITLE || '';
-const envLetterOverride = import.meta.env.VITE_BIRTHDAY_LETTER_OVERRIDE || '';
-const envShowCake = import.meta.env.VITE_SHOW_CAKE_SECTION !== 'false';
-const envShowVideo = import.meta.env.VITE_SHOW_VIDEO_SECTION !== 'false';
-const envFinalVideo = import.meta.env.VITE_FINAL_VIDEO_URL || '';
-const envMemories = import.meta.env.VITE_SPECIAL_MEMORIES 
-  ? import.meta.env.VITE_SPECIAL_MEMORIES.split('|').map((m: string) => {
+const envLetterTitle = parseEnvString(import.meta.env.VITE_BIRTHDAY_LETTER_TITLE);
+const envLetterOverride = parseEnvString(import.meta.env.VITE_BIRTHDAY_LETTER_OVERRIDE).replace(/\\n/g, '\n');
+const envShowCake = parseEnvBoolean(import.meta.env.VITE_SHOW_CAKE_SECTION, true);
+const envShowPhotos = parseEnvBoolean(import.meta.env.VITE_SHOW_PHOTO_SECTION ?? import.meta.env.VITE_SHOW_PHOTOS_SECTION, true);
+const envShowQuiz = parseEnvBoolean(import.meta.env.VITE_SHOW_QUIZ_SECTION, true);
+const envShowHeartTree = parseEnvBoolean(import.meta.env.VITE_SHOW_HEART_TREE_SECTION, true);
+const envShowVideo = parseEnvBoolean(import.meta.env.VITE_SHOW_VIDEO_SECTION, true);
+const envShowFinalSurprise = parseEnvBoolean(import.meta.env.VITE_SHOW_FINAL_SURPRISE, true);
+const envShowGift = parseEnvBoolean(import.meta.env.VITE_SHOW_GIFT_SECTION, true);
+const envFinalVideo = parseEnvString(import.meta.env.VITE_FINAL_VIDEO_URL);
+const envMemories = import.meta.env.VITE_SPECIAL_MEMORIES
+  ? String(import.meta.env.VITE_SPECIAL_MEMORIES).split('|').map((m: string) => {
       const [text, image] = m.split(';');
       return { text: text?.trim(), image: image?.trim() };
     })
   : [];
+
+const envFamilyProfileJson = parseEnvJson<FamilyMemberProfile>(import.meta.env.VITE_FAMILY_PROFILE_JSON);
+const envFamilyType = parseEnvString(import.meta.env.VITE_FAMILY_MEMBER_TYPE) as FamilyMemberType;
+const validFamilyTypes: FamilyMemberType[] = [
+  'brother',
+  'sister',
+  'father',
+  'mother',
+  'grandfather',
+  'grandmother',
+  'uncle',
+  'aunt',
+  'cousin',
+  'son',
+  'daughter',
+  'guardian',
+  'friend',
+  'custom',
+];
+const envFamilyProfile =
+  envFamilyProfileJson ??
+  (validFamilyTypes.includes(envFamilyType)
+    ? createFamilyMemberProfile(envFamilyType, envName || 'Family Member', envDate ?? undefined, {
+        preferredName: parseEnvString(import.meta.env.VITE_FAMILY_PREFERRED_NAME),
+        nicknames: parseEnvList(import.meta.env.VITE_FAMILY_NICKNAMES),
+        relationshipOverrides: {
+          relationshipLabel: parseEnvString(import.meta.env.VITE_FAMILY_RELATIONSHIP_LABEL) || undefined,
+          closenessLevel: (parseEnvNumber(import.meta.env.VITE_FAMILY_CLOSENESS, 7) || 7) as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,
+          yearsKnown: parseEnvNumber(import.meta.env.VITE_FAMILY_YEARS_KNOWN, undefined) ?? undefined,
+          familySide: parseEnvString(import.meta.env.VITE_FAMILY_SIDE) as never,
+        },
+        privacy: {
+          defaultLevel: (parseEnvString(import.meta.env.VITE_FAMILY_PRIVACY) || 'family') as never,
+          allowExport: parseEnvBoolean(import.meta.env.VITE_FAMILY_ALLOW_EXPORT, true),
+        },
+      })
+    : undefined);
 
 export const useBirthdayStore = create<BirthdayStore>((set, get) => ({
   config: {
@@ -98,19 +249,29 @@ export const useBirthdayStore = create<BirthdayStore>((set, get) => ({
     gender: envGender,
     relationship: envRelationship,
     favoriteColor: envColor,
+    favoriteEmojis: envFavoriteEmojis,
     interests: envItems,
     customMessage: envMessage,
     senderName: envSenderName,
     birthdayDate: envDate,
     animationSpeed: (import.meta.env.VITE_ANIMATION_SPEED as 'slow' | 'moderate' | 'fast') || null,
-    particleCount: import.meta.env.VITE_PARTICLE_COUNT ? parseInt(import.meta.env.VITE_PARTICLE_COUNT, 10) : 25,
+    animationIntensity: (parseEnvString(import.meta.env.VITE_ANIMATION_INTENSITY) as 'low' | 'medium' | 'high') || 'high',
+    particleCount: parseEnvNumber(import.meta.env.VITE_PARTICLE_COUNT, 25) ?? 25,
+    photos: envPhotos,
+    photoCaptions: envPhotoCaptions,
     videos: envVideos,
     letterTitle: envLetterTitle,
     letterOverride: envLetterOverride,
     showCakeSection: envShowCake,
+    showPhotoSection: envShowPhotos,
+    showQuizSection: envShowQuiz,
+    showHeartTreeSection: envShowHeartTree,
     showVideoSection: envShowVideo,
+    showFinalSurprise: envShowFinalSurprise,
+    showGiftSection: envShowGift,
     finalVideoUrl: envFinalVideo,
     specialMemories: envMemories,
+    familyProfile: envFamilyProfile,
   },
   isConfigured: !!envName,
   setConfig: (newConfig) =>

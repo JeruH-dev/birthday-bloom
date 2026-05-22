@@ -23,11 +23,19 @@ export const PhotoGallery = () => {
   const autoAdvanceDelay = animationPacing === 'fast' ? 4500 : animationPacing === 'slow' ? 8500 : 6000;
 
   const photos = useMemo(() => {
-    const base = [
-      { src: PHOTO_ASSETS.photo1 || photo1Default, fallback: photo1Default, key: "p1" },
-      { src: PHOTO_ASSETS.photo2 || photo2Default, fallback: photo2Default, key: "p2" },
-      { src: PHOTO_ASSETS.photo3 || photo3Default, fallback: photo3Default, key: "p3" },
-    ].filter(p => p.src !== null);
+    const envPhotos = config.photos?.map((src, index) => ({
+      src,
+      fallback: [photo1Default, photo2Default, photo3Default][index % 3],
+      key: `env-${index}`,
+    })) ?? [];
+
+    const base = envPhotos.length > 0
+      ? envPhotos
+      : [
+          { src: PHOTO_ASSETS.photo1 || photo1Default, fallback: photo1Default, key: "p1" },
+          { src: PHOTO_ASSETS.photo2 || photo2Default, fallback: photo2Default, key: "p2" },
+          { src: PHOTO_ASSETS.photo3 || photo3Default, fallback: photo3Default, key: "p3" },
+        ].filter(p => p.src !== null);
 
     const captions = relationship === 'partner' ? [
       "Every moment with you is a gift 💖",
@@ -43,8 +51,11 @@ export const PhotoGallery = () => {
       "A journey filled with love 🌟"
     ];
 
-    return base.map((p, i) => ({ ...p, caption: captions[i] || "Beautiful memory ✨" }));
-  }, [relationship]);
+    return base.map((p, i) => ({
+      ...p,
+      caption: config.photoCaptions?.[i] || captions[i] || "Beautiful memory",
+    }));
+  }, [relationship, config.photos, config.photoCaptions]);
 
   // 3D Tilt Effect
   const x = useMotionValue(0);
@@ -142,7 +153,7 @@ export const PhotoGallery = () => {
                 onLoad={(e) => handleImageLoad(photos[activeIndex].key, e)}
                 onError={(e) => { (e.target as HTMLImageElement).src = photos[activeIndex].fallback; }}
                 loading="lazy"
-                className={`w-full h-full object-cover transition-transform duration-[3000ms] ${!isMobile ? "group-hover:scale-110" : ""}`}
+                className={`w-full h-full object-cover transition-transform [transition-duration:3000ms] ${!isMobile ? "group-hover:scale-110" : ""}`}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90" />
               

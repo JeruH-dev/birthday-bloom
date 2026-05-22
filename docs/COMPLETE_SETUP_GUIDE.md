@@ -78,7 +78,7 @@ Birthday Bloom is a **cinematic birthday celebration engine** that transforms a 
 | Relationship Types | 6 | 7 (+ custom support) |
 | Data Model Completeness | Basic | Comprehensive |
 | Validation System | None | Full validator |
-| Family Templates | Generic | Specialized (Brother/Sister) |
+| Family Templates | Generic | Scalable registry with Brother, Sister, Father, Mother, Grandparents, Relatives, Children, Guardian, Friend, and Custom |
 | Configuration Options | 15 | 40+ options |
 | Type Safety | Partial | Complete |
 | Documentation | Moderate | Extensive |
@@ -328,6 +328,17 @@ nostalgic     - Warm, memory-focused theme
 
 ## Family Templates
 
+The current source of truth is [family-system.md](./family-system.md). Birthday Bloom now uses a shared `BaseFamilyMemberProfile` plus specialized relationship fields, so the system supports Brother, Sister, Father, Mother, Grandfather, Grandmother, Uncle, Aunt, Cousin, Son, Daughter, Guardian, Friend, and Custom profiles without duplicating schemas.
+
+Use env first for normal customization:
+
+```env
+VITE_BIRTHDAY_RELATIONSHIP=sister
+VITE_FAMILY_MEMBER_TYPE=sister
+VITE_FAMILY_PREFERRED_NAME=Pri
+VITE_FAMILY_CLOSENESS=10
+```
+
 ### Brother Template
 
 The **Brother Template** is designed specifically for celebrating a male sibling with 15 comprehensive sections:
@@ -520,6 +531,8 @@ interface SisterProfile {
 ```
 
 ### Using Family Templates
+
+For the newest architecture and examples, see [family-system.md](./family-system.md) and [template-architecture.md](./template-architecture.md). The older Brother/Sister examples below are kept for migration context; new projects should prefer `createFamilyMemberProfile()` and the dedicated v3 factories.
 
 ```typescript
 import { BrotherProfile, SisterProfile, createDefaultBrotherProfile, createDefaultSisterProfile } from '@/features/core/models/familyTemplates';
@@ -882,7 +895,7 @@ MIT License - See LICENSE file for details.
 ## Changelog
 
 ### v3.0 (Current)
-- ✅ Complete family templates (Brother/Sister)
+- ✅ Complete scalable family templates for siblings, parents, grandparents, relatives, children, guardians, friends, and custom members
 - ✅ Enhanced data models with validation
 - ✅ Comprehensive documentation
 - ✅ Production-ready configuration system

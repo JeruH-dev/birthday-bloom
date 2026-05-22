@@ -20,7 +20,7 @@ Birthday Bloom v3.0 represents a **comprehensive production-ready upgrade** with
 | Relationship Types | 6 | 8 | **+33%** |
 | Data Model Sections | 1 | 8 | **+800%** |
 | Validation Rules | 0 | 12+ | **New** |
-| Family Templates | Generic | 2 (Brother/Sister) | **+2 Specialized** |
+| Family Templates | Generic | 14 registered types | **Scalable registry** |
 | Documentation Pages | 8 | 15+ | **+87%** |
 | Type Safety | Partial | Complete | **Improved** |
 | Code Comments | Basic | Comprehensive | **Enhanced** |
@@ -30,6 +30,8 @@ Birthday Bloom v3.0 represents a **comprehensive production-ready upgrade** with
 ## New Features in v3.0
 
 ### 1. Family Templates System ⭐
+
+Current implementation: the family system is a registry-driven architecture in `src/features/core/models/familyTemplates.ts`. It keeps Brother and Sister support and adds Father, Mother, Grandfather, Grandmother, Uncle, Aunt, Cousin, Son, Daughter, Guardian, Friend, and Custom profiles. See [family-system.md](./family-system.md) and [template-architecture.md](./template-architecture.md).
 
 #### Brother Template
 - **15 Comprehensive Sections**: Basic Info, Identity, Personality, Interests, Skills, Appearance, Contact, Sibling Bond, Dreams, Achievements, Media, Important Dates, Personal Notes, Preferences, Future Plans
@@ -252,7 +254,7 @@ templates/
 ```
 
 ### Updated Files
-- `src/config/templates.ts` - Added brother/sister letters
+- `src/config/templates.ts` - Relationship-aware emotional letters
 - `README.md` - Updated with v3.0 features
 - `.env.example` - Extended variables
 
@@ -477,7 +479,7 @@ ConfigValidator.mergeWithDefaults(config);  // Apply defaults
 - Documentation: 1,400+ lines
 - Type definitions: 200+ lines
 - Validation rules: 12+
-- Templates: 2 (Brother/Sister)
+- Templates: 14 registered family member types
 
 ### Quality Metrics
 - Type coverage: 100%
