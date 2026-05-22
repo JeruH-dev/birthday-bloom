@@ -16,6 +16,14 @@
   <a href="https://vercel.com"><img src="https://img.shields.io/badge/Deploy-Vercel-black?style=for-the-badge&logo=vercel" alt="Deploy"></a>
 </p>
 
+<div align="center">
+  <figure>
+    <img src="src\assets\birthday-boom.png" alt="Birthday Bloom hero banner" style="max-width:100%;height:auto;border-radius:18px;box-shadow:0 30px 90px rgba(0,0,0,0.35);" />
+    <figcaption><em>Premium cinematic birthday experiences built with React, Framer Motion, and env-driven personalization.</em></figcaption>
+  </figure>
+</div>
+</div>
+
 ---
 
 ## Start Here
@@ -52,6 +60,19 @@ Copy `.env.example` to `.env.local`, change values, restart the dev server, and 
 - **"Pure Reality" Cake 3D**: High-fidelity procedural textures, realistic drips, and volumetric lighting.
 - **Final Surprise Video**: A dedicated emotional closing scene with a configurable finale video.
 - **Advanced Physics Balloons**: Non-linear, physics-correct balloon drift with interactive "pop" mechanics.
+
+<div align="center">
+  <figure>
+    <img src="assets/previews/feature-showcase.png" alt="Birthday Bloom feature showcase" style="max-width:100%;height:auto;border-radius:18px;box-shadow:0 24px 68px rgba(0,0,0,0.28);" />
+    <figcaption><em>Feature showcase highlighting interactive cake, memory gallery, family templates, and validation workflows.</em></figcaption>
+  </figure>
+  <p>
+    <img src="assets/icons/icon-rocket.png" alt="Fast setup icon" width="64" height="64" style="margin:0 12px;" />
+    <img src="assets/icons/icon-shield.png" alt="Secure environment icon" width="64" height="64" style="margin:0 12px;" />
+    <img src="assets/icons/icon-sparkle.png" alt="Cinematic sparkles icon" width="64" height="64" style="margin:0 12px;" />
+  </p>
+  <p><em>Fast dev velocity, secure env configuration, and cinematic storytelling — all part of the premium UX.</em></p>
+</div>
 
 ---
 
@@ -225,10 +246,18 @@ sequenceDiagram
 
 Understanding how the timeline works is essential to modifying the source code. The entire animation sequence relies on precisely tuned delays.
 
+<div align="center">
+  <figure>
+    <img src="src/assets/mastering-the-lifecycle.png" alt="Mastering the lifecycle illustration" style="max-width:100%;height:auto;border-radius:18px;box-shadow:0 24px 72px rgba(0,0,0,0.24);" />
+    <figcaption><em>Mastering the Lifecycle — a visual storyboard of Boot, Intro, Execution, Transition, and Celebration.</em></figcaption>
+  </figure>
+</div>
+
 1. **Boot**: `App.tsx` initializes and decides whether to show the Splash screen or Intro.
 2. **Mount**: `CinematicIntro.tsx` mounts. Using a `.map()` over predefined text arrays, it uses `setTimeout` to flip states. Ensure `overflow: hidden` remains so mobile layouts do not bounce.
 3. **Execution**: During the fake chat phase, a sequence of timers dictates when the cursor moves, hovers, deletes text, and retypes.
 4. **Transition**: Once the intro is completely finished, it calls the `onComplete` prop back to `App.tsx`, which unmounts the intro and fades in `MainBirthday.tsx`. If this prop never fires, the user is stuck in the intro forever. Be careful when deleting timers!
+
 
 ---
 
@@ -247,6 +276,13 @@ The `CinematicIntro` component is the bridge between the Splash Screen and the M
 
 ### 2. The Interactive Cake (`CakeCutting.tsx`)
 The most complex interactive piece of the platform.
+
+<div align="center">
+  <figure>
+    <img src="src/assets/cake%20cutting.png" alt="Birthday Bloom cake cutting screenshot" style="max-width:100%;height:auto;border-radius:18px;box-shadow:0 24px 72px rgba(0,0,0,0.24);" />
+    <figcaption><em>Interactive Cake Cutting stage captured directly from the app experience.</em></figcaption>
+  </figure>
+</div>
 
 **Code Breakdown:**
 - **SVG Mastery**: The cake is drawn entirely with SVG. This prevents pixelation on high-density Retina displays (iPad Pro, 4K monitors, etc.).
@@ -475,6 +511,12 @@ Handles HTML5 Audio instances without cluttering the DOM with invisible `<audio>
 
 ---
 
+<div align="center">
+  <figure>
+    <img src="src/assets/faq.png" alt="Birthday Bloom cake cutting screenshot" style="max-width:100%;height:auto;border-radius:18px;box-shadow:0 24px 72px rgba(0,0,0,0.24);" />
+    <figcaption><em>Interactive Cake Cutting stage captured directly from the app experience.</em></figcaption>
+  </figure>
+</div>
 
 ## 🛠️ Troubleshooting & Massive FAQ
 
@@ -698,6 +740,13 @@ spec:
   selector:
     app: birthday-bloom
 ```
+
+<div align="center">
+  <figure>
+    <img src="src\assets\footer.png" alt="Birthday Bloom footer CTA" style="max-width:100%;height:auto;border-radius:18px;box-shadow:0 26px 74px rgba(0,0,0,0.26);" />
+    <figcaption><em>Launch your cinematic birthday surprise with env-driven configuration and a modern deployment workflow.</em></figcaption>
+  </figure>
+</div>
 
 ---
 
