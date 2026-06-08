@@ -323,6 +323,10 @@ nostalgic     - Warm, memory-focused theme
 | `VITE_BGM_URL` | URL | null | Background music URL |
 | `VITE_ANIMATION_INTENSITY` | enum | "high" | low/medium/high |
 | `VITE_DURATION` | enum | "normal" | quick/normal/extended |
+| `VITE_PASSWORD_REQUIRED` | boolean | false | Force enables the password lock page |
+| `VITE_PASSWORD` | string | "" | Manual password override |
+| `VITE_PASSWORD_HINT` | string | "" | Customized emotional hint for password |
+| `VITE_PASSWORD_FORMAT` | enum | "MMDD" | Format to auto-generate password from birthdate (MMDD, DDMM, etc.) |
 
 ---
 

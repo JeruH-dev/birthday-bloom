@@ -61,6 +61,10 @@ export interface BirthdayConfig {
   finalVideoUrl?: string;
   specialMemories?: { text: string; image?: string }[];
   familyProfile?: FamilyMemberProfile;
+  password?: string;
+  passwordHint?: string;
+  passwordFormat?: string;
+  passwordRequired?: boolean;
 }
 
 interface BirthdayStore {
@@ -205,6 +209,13 @@ const envMemories = import.meta.env.VITE_SPECIAL_MEMORIES
     })
   : [];
 
+const envPassword = parseEnvString(import.meta.env.VITE_PASSWORD);
+const envPasswordHint = parseEnvString(import.meta.env.VITE_PASSWORD_HINT);
+const envPasswordFormat = parseEnvString(import.meta.env.VITE_PASSWORD_FORMAT) || 'MMDD';
+const envPasswordRequired = import.meta.env.VITE_PASSWORD_REQUIRED !== undefined
+  ? parseEnvBoolean(import.meta.env.VITE_PASSWORD_REQUIRED, false)
+  : undefined;
+
 const envFamilyProfileJson = parseEnvJson<FamilyMemberProfile>(import.meta.env.VITE_FAMILY_PROFILE_JSON);
 const envFamilyType = parseEnvString(import.meta.env.VITE_FAMILY_MEMBER_TYPE) as FamilyMemberType;
 const validFamilyTypes: FamilyMemberType[] = [
@@ -272,6 +283,10 @@ export const useBirthdayStore = create<BirthdayStore>((set, get) => ({
     finalVideoUrl: envFinalVideo,
     specialMemories: envMemories,
     familyProfile: envFamilyProfile,
+    password: envPassword,
+    passwordHint: envPasswordHint,
+    passwordFormat: envPasswordFormat,
+    passwordRequired: envPasswordRequired,
   },
   isConfigured: !!envName,
   setConfig: (newConfig) =>

@@ -32,7 +32,7 @@ export const CinematicIntro = ({ onComplete }: CinematicIntroProps) => {
   const [flashWhite, setFlashWhite] = useState(false);
   
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const { fireConfetti, fireCannon, fireStars } = useConfetti();
+  const { fireConfetti, fireCannon, fireStars, fireCinematicCelebration } = useConfetti();
   const { playType, playWhoosh, playReveal, playPop, playBoom } = useSoundManager();
 
   // DYNAMIC CONFIGURATION ENGINE
@@ -213,7 +213,7 @@ export const CinematicIntro = ({ onComplete }: CinematicIntroProps) => {
       addTimer(() => {
         setRevealStep("grand-reveal");
         playBoom();
-        fireCannon();
+        fireCinematicCelebration();
         triggerShake();
         triggerFlash();
         spawnEmojiBurst();
@@ -230,7 +230,7 @@ export const CinematicIntro = ({ onComplete }: CinematicIntroProps) => {
       });
 
       const endTime = (11000 + finalLines.length * 3500) * speedMultiplier;
-      addTimer(() => { playBoom(); fireConfetti({ particleCount: 300, spread: 180 }); fireCannon(); }, endTime);
+      addTimer(() => { playBoom(); fireConfetti({ particleCount: 300, spread: 180 }); fireCinematicCelebration(); }, endTime);
       addTimer(() => setFadeOut(true), endTime + 2000);
       addTimer(() => { setScene("done"); onComplete(); }, endTime + 3500);
     }
@@ -253,6 +253,7 @@ export const CinematicIntro = ({ onComplete }: CinematicIntroProps) => {
     fireConfetti,
     fireCannon,
     fireStars,
+    fireCinematicCelebration,
     spawnEmojiBurst,
     triggerFlash,
     triggerRingPulse,

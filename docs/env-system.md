@@ -17,6 +17,10 @@ The **Birthday Bloom** engine uses a secret-first hydration model. This means al
 | `VITE_BIRTHDAY_AGE` | `25` | Injected into the storytelling lines. |
 | `VITE_BIRTHDAY_COLOR` | `#FF6B6B` | Drives the global theme, glows, and gradients. |
 | `VITE_CUSTOM_MESSAGE` | `"Stay awesome!"` | Revealed in the final grand message card. |
+| `VITE_PASSWORD_REQUIRED` | `true` | Requires password page immediately after Splash. |
+| `VITE_PASSWORD` | `"love"` | Text passcode key (e.g. text or numbers). |
+| `VITE_PASSWORD_HINT` | `"Our anniversary"`| Expanding text hint for password. |
+| `VITE_PASSWORD_FORMAT` | `"MMDD"` | Auto-generated password layout from Date value. |
 
 ## 🧪 Verification
 To check if your environment is correctly loaded:

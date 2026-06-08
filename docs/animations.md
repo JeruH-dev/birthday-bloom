@@ -28,10 +28,30 @@ The background uses the `FloatingElements` system which features:
 
 ---
 
+## 🎭 Specialized Transition & Celebration Effects (v3.1)
+
+### 1. Password Lock Glassmorphic Wobble
+- **Wobble/Shake Effect**: Passcode entries that do not match the expected key trigger a spring-based lateral shake animation (`x: [-10, 10, -10, 10, 0]`) to give natural feedback without layout shifts.
+- **Blur Overlay Fade**: Transitioning out of the lock screen triggers a smooth backdrop-filter transition, dissolving the blur and letting the user step into the storytelling flow.
+
+### 2. Cake Countdown Scaling Number
+- **3-2-1 Countdown Ticks**: Each countdown number scale expands from `0.3x` to `1.2x` with a quick spring bounce (`stiffness: 300, damping: 15`), fading out as the next tick occurs.
+- **Centralized Timeline**: Timings are fully synchronized using a centralized config object (`CINEMATIC_TIMINGS`), avoiding overlapping timeouts or race conditions on mobile.
+
+### 3. Layered Pyrotechnics
+- **Staggered Sides**: Corner cannons fire with high velocity and narrow spread.
+- **Radial Climax**: Centered bursts expand outward right above the cake area.
+- **Glitter Rain**: Gold and silver stars descend slowly with low gravity and random horizontal drift.
+
+---
+
 ## 🛠️ Implementation Details
 Most animations are found in:
 - `src/components/birthday/CinematicIntro.tsx`
 - `src/components/birthday/MainBirthday.tsx`
 - `src/components/birthday/FloatingElements.tsx`
+- `src/components/birthday/PasswordUnlock.tsx`
+- `src/components/birthday/CakeCutting.tsx`
+- `src/components/birthday/Confetti.tsx`
 
 For custom animations, use the `useStoryVariants` hook in the cinematic directory.

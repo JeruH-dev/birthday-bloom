@@ -84,9 +84,25 @@ By chaining together asynchronous events and orchestrated **Framer Motion** time
 
 ---
 
-## ✨ What's New in v3.0
+## ✨ What's New in v3.0 & v3.1
 
-### 🎉 Major Features
+### ✨ What's New in v3.1
+
+#### 1. **Cinematic Password Unlock System** 🔐
+- Frostable glassmorphic lock screen appearing right after the Splash Screen.
+- Dual password resolution: manual passcode key (`VITE_PASSWORD`) or dynamic passcode generation based on the target birthday date (`VITE_BIRTHDAY_DATE`).
+- Dynamic hint drawer showing a customized emotional message (`VITE_PASSWORD_HINT`) or auto-generating formatted date prompts.
+- Fluid keyboard inputs (mobile numeric trigger) and haptic failure wobbles.
+
+#### 2. **Procedural 3-2-1 Countdown Timer** ⏳
+- High-suspense cinematic countdown before cutting the selected birthday cake.
+- Staggered tick sound effects and dynamic Framer Motion scaling numbers.
+
+#### 3. **Layered Celebration Pyrotechnics** 🎆
+- Upgraded, highly optimized canvas-confetti multi-stage fireworks.
+- Staggered corner cannons, radial star bursts, and lightweight golden glitter rain.
+
+### 🎉 Major Features (v3.0)
 
 #### 1. **Family Templates System** ⭐
 - Dedicated Brother and Sister templates remain supported.
@@ -369,13 +385,18 @@ The entire initialization process is controlled securely via the `.env` paradigm
 | `VITE_BIRTHDAY_DATE` | NO | `null` | The specific date of the birthday. |
 | `VITE_BIRTHDAY_RELATIONSHIP` | NO | `"partner"` | Options: `"partner"`, `"friend"`, `"family"`. This fundamentally changes the UI mood, colors, storytelling text, and emoji effects! |
 | `VITE_BIRTHDAY_WISHER_NAME` | NO | `""` | The birthday wish sender's name, shown at the end of the emotional letter. |
-| `VITE_FAVORITE_COLOR` | NO | `"#FF6B6B"` | A hex code defining the dynamic global theme, neon glows, and gradient backgrounds. |
-| `VITE_FAVORITE_ITEMS` | NO | `""` | Comma-separated list of interests/items to customize ambient particles. |
+| `VITE_BIRTHDAY_COLOR` / `VITE_FAVORITE_COLOR` | NO | `"#FF6B6B"` | A hex code defining the dynamic global theme, neon glows, and gradient backgrounds. |
+| `VITE_BIRTHDAY_INTERESTS` / `VITE_FAVORITE_ITEMS` | NO | `""` | Comma-separated list of interests/items to customize ambient particles. |
 | `VITE_BIRTHDAY_LETTER_TITLE` | NO | `""` | Optional heading for the emotional letter card. |
 | `VITE_BIRTHDAY_LETTER_OVERRIDE` | NO | `""` | Replace the generated letter body with your own multi-line letter. |
-| `VITE_CUSTOM_MESSAGE` | NO | `""` | A heartfelt, custom message to reveal with kinetic typography right before the grand cake reveal. |
-| `VITE_ALLOW_AUDIO` | NO | `true` | Allows default autoplay of background audio and SFX popping noises. |
+| `VITE_BIRTHDAY_CUSTOM_MESSAGE` / `VITE_CUSTOM_MESSAGE` | NO | `""` | A heartfelt, custom message to reveal with kinetic typography right before the grand cake reveal. |
+| `VITE_SOUND_URL` / `VITE_BGM_URL` | NO | `""` | The background music audio URL. |
+| `VITE_SOUND_EFFECTS` | NO | `true` | Enable or disable SFX audio feedback. |
 | `VITE_VIDEO_1`, `VITE_VIDEO_2`, `VITE_VIDEO_3` | NO | `""` | Adds video links (YouTube or MP4) to the final cinematic Video Gallery at the bottom of the page. |
+| `VITE_PASSWORD_REQUIRED` | NO | `false` | Force enables the password lock page. |
+| `VITE_PASSWORD` | NO | `""` | Manual password override (e.g. `love` or `1234`). |
+| `VITE_PASSWORD_HINT` | NO | `""` | Customized emotional hint displayed if the user gets stuck. |
+| `VITE_PASSWORD_FORMAT` | NO | `"MMDD"` | Format to auto-generate password from `VITE_BIRTHDAY_DATE` if `VITE_PASSWORD` is not set (e.g., MMDD, DDMM). |
 
 **How to set this up locally:**
 In the root of your project, create a file named `.env`. Add the following:

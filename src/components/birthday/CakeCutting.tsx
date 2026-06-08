@@ -13,6 +13,7 @@ type Phase =
   | "blow-intro"
   | "blowing"
   | "wish"
+  | "countdown"
   | "knife-enter"
   | "cutting"
   | "burst"
@@ -348,6 +349,15 @@ const CakeCard = ({ cake, index, onSelect }: { cake: CakeOption; index: number; 
 );
 };
 
+const CINEMATIC_TIMINGS = {
+  blowing: 1500,     // Duration of blow animation / candles fading
+  wish: 3000,        // Time to display wish message
+  countdown: 3000,   // Duration of the 3-2-1 countdown (1s per count)
+  knifeEnter: 1500,  // Knife entering/descending
+  cutting: 1000,     // Knife slicing the cake (showing sparks)
+  burst: 1500,       // Climax explosion & fireworks
+};
+
 export const CakeCutting = () => {
   const isMobile = useIsMobile();
   const reduceMotion = useReducedMotion();
@@ -355,10 +365,12 @@ export const CakeCutting = () => {
   const [selectedCake, setSelectedCake] = useState<CakeOption | null>(null);
   const [candlesLit, setCandlesLit] = useState(true);
   const [quoteIndex, setQuoteIndex] = useState(-1);
-  const { fireCannon } = useConfetti();
+  const [countdownVal, setCountdownVal] = useState<number | string>("");
+  const { fireCannon, fireCinematicCelebration } = useConfetti();
   const { playBoom, playReveal, playPop, playWhoosh } = useSoundManager();
   
-  const { name, relationship, gender } = useBirthdayStore(state => state.config);
+  const { name, relationship, gender, favoriteColor } = useBirthdayStore(state => state.config);
+  const primaryColor = favoriteColor || '#FF6B6B';
 
   const quotes = useMemo(() => {
     const isMale = gender === 'male';
@@ -403,12 +415,61 @@ export const CakeCutting = () => {
     playWhoosh();
     setCandlesLit(false);
 
-    setTimeout(() => setPhase("wish"), 1500);
-    setTimeout(() => { playReveal(); setPhase("knife-enter"); }, 4500);
-    setTimeout(() => { playBoom(); setPhase("cutting"); if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(200); }, 6000);
-    setTimeout(() => { fireCannon(); setPhase("burst"); playReveal(); }, 7000);
-    setTimeout(() => { setPhase("quotes"); setQuoteIndex(0); }, 8500);
-  }, [phase, fireCannon, playBoom, playReveal, playWhoosh]);
+    const wishDelay = CINEMATIC_TIMINGS.blowing;
+    const countdownDelay = wishDelay + CINEMATIC_TIMINGS.wish;
+    const knifeEnterDelay = countdownDelay + CINEMATIC_TIMINGS.countdown;
+    const cuttingDelay = knifeEnterDelay + CINEMATIC_TIMINGS.knifeEnter;
+    const burstDelay = cuttingDelay + CINEMATIC_TIMINGS.cutting;
+    const quotesDelay = burstDelay + CINEMATIC_TIMINGS.burst;
+
+    // 1. Move to Wish state
+    setTimeout(() => {
+      setPhase("wish");
+    }, wishDelay);
+
+    // 2. Start Countdown
+    setTimeout(() => {
+      setPhase("countdown");
+      setCountdownVal(3);
+      playPop();
+    }, countdownDelay);
+
+    setTimeout(() => {
+      setCountdownVal(2);
+      playPop();
+    }, countdownDelay + 1000);
+
+    setTimeout(() => {
+      setCountdownVal(1);
+      playPop();
+    }, countdownDelay + 2000);
+
+    // 3. Knife enters
+    setTimeout(() => {
+      playReveal();
+      setPhase("knife-enter");
+    }, knifeEnterDelay);
+
+    // 4. Cutting begins
+    setTimeout(() => {
+      playBoom();
+      setPhase("cutting");
+      if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(200);
+    }, cuttingDelay);
+
+    // 5. Burst Climax
+    setTimeout(() => {
+      fireCinematicCelebration();
+      setPhase("burst");
+      playReveal();
+    }, burstDelay);
+
+    // 6. Quotes display
+    setTimeout(() => {
+      setPhase("quotes");
+      setQuoteIndex(0);
+    }, quotesDelay);
+  }, [phase, fireCinematicCelebration, playBoom, playReveal, playWhoosh, playPop]);
 
   useEffect(() => {
     if (phase !== "select") {
@@ -496,6 +557,42 @@ export const CakeCutting = () => {
                         WISH SENT TO THE STARS
                       </h2>
                       <p className="text-white/60 text-xl mt-4 font-light italic">Wait for the magical cut...</p>
+                    </div>
+                  </motion.div>
+                )}
+
+                {phase === "countdown" && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex flex-col items-center gap-12"
+                  >
+                    <CakeSVG cake={cake} split={false} candlesLit={false} name={name} springConfig={cakeSpring} />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm z-50 rounded-[2.5rem]">
+                      <motion.span
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 0.5, y: 0 }}
+                        className="text-white/40 text-xs md:text-sm tracking-[0.3em] uppercase mb-4 font-bold"
+                      >
+                        Prepare to cut...
+                      </motion.span>
+                      <AnimatePresence mode="wait">
+                        <motion.h1
+                          key={countdownVal}
+                          initial={{ scale: 0.3, opacity: 0, filter: "blur(10px)" }}
+                          animate={{ 
+                            scale: [0.3, 1.4, 1], 
+                            opacity: 1, 
+                            filter: "blur(0px)",
+                            textShadow: `0 0 40px ${primaryColor}, 0 0 80px ${primaryColor}` 
+                          }}
+                          exit={{ scale: 1.8, opacity: 0, filter: "blur(15px)" }}
+                          transition={{ duration: 0.7, ease: "easeOut" }}
+                          className="font-display text-8xl md:text-[10rem] font-black text-white"
+                        >
+                          {countdownVal}
+                        </motion.h1>
+                      </AnimatePresence>
                     </div>
                   </motion.div>
                 )}

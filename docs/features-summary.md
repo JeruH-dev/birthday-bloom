@@ -1,6 +1,21 @@
-# Birthday Bloom v2.0 - Features Summary
+# Birthday Bloom v3.1 - Features Summary
 
 ## ✨ Core Features
+
+### 🔐 Cinematic Password Unlock System
+- Frosted glassmorphic layout appearing directly after the Splash Screen, acting as the gateway to the experience.
+- Automatic passcode generation based on birthdate (`VITE_BIRTHDAY_DATE`) if no manual passcode (`VITE_PASSWORD`) is configured.
+- Supports multiple custom date formats: `MMDD`, `DDMM`, `YYYYMMDD`, `YYYY-MM-DD`, etc.
+- Emotional hint drawer (`VITE_PASSWORD_HINT`) and mobile-friendly numeric keyboard trigger with shake feedback on failure.
+
+### ⏳ Procedural 3-2-1 Countdown Timer
+- High-suspense cinematic countdown animation before cutting the selected birthday cake.
+- Staggered tick/countdown sound effects and dynamic scaling transitions.
+- Centralized timeline config for all cinematic timings to ensure precise transitions.
+
+### 🎆 Layered Celebration Pyrotechnics
+- Multi-stage fireworks using canvas-confetti rendering optimized for steady 60fps performance on mobile.
+- Features staggered bottom-corner cannons, radial star bursts, and a lightweight frame-loop golden/silver glitter rain.
 
 ### 🎂 Interactive Cake Cutting Experience
 - 4 beautiful cake designs (Chocolate, Strawberry, Royal Velvet, Floral Garden)
@@ -364,4 +379,4 @@ VITE_REDUCED_MOTION=true
 
 ---
 
-**Birthday Bloom v2.0 - Making celebrations magical! 🎉**
+**Birthday Bloom v3.1 - Making celebrations magical! 🎉**

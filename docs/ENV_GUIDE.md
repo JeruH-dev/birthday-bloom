@@ -200,6 +200,26 @@ VITE_FAMILY_PROFILE_JSON={"schemaVersion":"3.0.0","id":"sister-1","memberType":"
 
 Use JSON only when you need every field. For normal projects, use the simpler family variables.
 
+## Cinematic Password Unlock (v3.1)
+
+You can protect the birthday surprise using a cinematic frosted-glass password lock.
+
+| Variable | Type | Default | Purpose |
+| --- | --- | --- | --- |
+| `VITE_PASSWORD_REQUIRED` | boolean | `false` | Force enables the password lock page. |
+| `VITE_PASSWORD` | string | `""` | Set a manual password override (e.g. `love` or `1234`). |
+| `VITE_PASSWORD_HINT` | string | `""` | Customized emotional hint displayed if the user gets stuck. |
+| `VITE_PASSWORD_FORMAT` | enum | `MMDD` | Format to auto-generate password from `VITE_BIRTHDAY_DATE` if `VITE_PASSWORD` is not set. |
+
+Supported `VITE_PASSWORD_FORMAT` values:
+- `MMDD` (default, e.g. `0424` for April 24th)
+- `DDMM` (e.g. `2404` for April 24th)
+- `YYYYMMDD` (e.g. `20010424`)
+- `YYYY-MM-DD` (e.g. `2001-04-24`)
+- `MM-DD` (e.g. `04-24`)
+- `DD-MM` (e.g. `24-04`)
+- `YYYY` (e.g. `2001`)
+
 ## Situation Recipes
 
 ### Romantic Partner

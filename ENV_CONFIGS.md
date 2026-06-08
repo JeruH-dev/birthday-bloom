@@ -17,6 +17,12 @@ VITE_BIRTHDAY_GENDER=female
 VITE_BIRTHDAY_RELATIONSHIP=partner
 VITE_BIRTHDAY_DATE=03-15
 
+# Cinematic Unlock (New in v3.1)
+# Passcode generated dynamically from birthday date will be "0315"
+VITE_PASSWORD_REQUIRED=true
+VITE_PASSWORD_FORMAT=MMDD
+VITE_PASSWORD_HINT=Our special date (Format: MMDD) 💖
+
 # Personalization
 VITE_BIRTHDAY_COLOR=#FF1493
 VITE_THEME=romantic
