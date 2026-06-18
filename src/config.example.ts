@@ -23,7 +23,7 @@ import {
 export const minimalConfig: Partial<EnhancedBirthdayConfig> = {
   core: {
     name: 'Naboraj',
-    dateOfBirth: new Date('2001-05-22'),
+    dateOfBirth: new Date('2003-07-27'),
     gender: 'male',
     relationship: 'friend',
   },
@@ -36,7 +36,7 @@ export const minimalConfig: Partial<EnhancedBirthdayConfig> = {
 export const comprehensiveConfig: EnhancedBirthdayConfig = ConfigValidator.mergeWithDefaults({
   core: {
     name: 'Naboraj Sarkar',
-    dateOfBirth: new Date('2001-05-22'),
+    dateOfBirth: new Date('2003-07-27'),
     gender: 'male',
     relationship: 'friend',
   },
