@@ -114,10 +114,10 @@ export const MusicPlayer = () => {
       audio.play().catch(() => {});
     }
 
-    // Flash the label for 3 s on track change
+    // Flash the label for 5 s on track change
     setShowLabel(true);
     clearTimeout(labelTimer.current);
-    labelTimer.current = window.setTimeout(() => setShowLabel(false), 3000);
+    labelTimer.current = window.setTimeout(() => setShowLabel(false), 5000);
   }, [trackIndex]);
 
   // ── Helpers ───────────────────────────────────────────────────────────
