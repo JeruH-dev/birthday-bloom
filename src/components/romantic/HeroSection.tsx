@@ -279,7 +279,7 @@ export const HeroSection = ({ onReveal, revealed }: HeroSectionProps) => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
-            Your countdown is below — see you on July 27 ✨
+            Your countdown is completed✨
           </motion.p>
         )}
       </div>
