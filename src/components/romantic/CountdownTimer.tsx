@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 // ── Birthday: July 27 2026 ────────────────────────────────────────────────
 // Month is 0-indexed in JS: January = 0, July = 7
-const TARGET = new Date(2026, 5, 19, 10, 22, 45);
+const TARGET = new Date(2026, 5, 19, 12, 55, 0);
 
 function getTimeLeft() {
   const diff = TARGET.getTime() - Date.now();
