@@ -18,9 +18,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const track1 = new URL("../../media/FOLA - you (Official Audio).mp3",                        import.meta.url).href;
-const track2 = new URL("../../media/Calum Scott - You Are The Reason (Official Video).mp3",  import.meta.url).href;
-const track3 = new URL("../../media/Anne-Marie - Birthday (Official Audio).mp3",             import.meta.url).href;
+// new URL() handles spaces and parentheses in filenames reliably
+const track1 = new URL("../../Media/FOLA - you (Official Audio).mp3",                        import.meta.url).href;
+const track2 = new URL("../../Media/Calum Scott - You Are The Reason (Official Video).mp3",  import.meta.url).href;
+const track3 = new URL("../../Media/Anne-Marie - Birthday (Official Audio).mp3",             import.meta.url).href;
 
 // ── Config ────────────────────────────────────────────────────────────────
 const TRACKS = [
@@ -82,9 +83,23 @@ export const MusicPlayer = () => {
     b.src = TRACKS[1].src;
     b.load();
 
-    const timer = window.setTimeout(() => setVisible(true), 2000);
+    const visibilityTimer = window.setTimeout(() => setVisible(true), 2000);
+    
+    // Auto-play after 5 seconds
+    const autoPlayTimer = window.setTimeout(() => {
+      const active = nodes.current[activeSlot.current];
+      active.play().then(() => {
+        setPlaying(true);
+        flashLabel();
+      }).catch(() => {
+        // Autoplay might be blocked by browser policy
+        // User can click play button manually
+      });
+    }, 5000);
+
     return () => {
-      clearTimeout(timer);
+      clearTimeout(visibilityTimer);
+      clearTimeout(autoPlayTimer);
       a.pause();
       b.pause();
     };
