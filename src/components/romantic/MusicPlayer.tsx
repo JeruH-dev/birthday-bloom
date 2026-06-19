@@ -95,7 +95,7 @@ export const MusicPlayer = () => {
         // Autoplay might be blocked by browser policy
         // User can click play button manually
       });
-    }, 5000);
+    }, 3500);
 
     return () => {
       clearTimeout(visibilityTimer);
