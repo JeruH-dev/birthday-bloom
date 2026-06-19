@@ -42,42 +42,42 @@ const rndColor = () => COLORS[Math.floor(Math.random() * COLORS.length)];
 function createRocket(W: number, H: number): Rocket {
   const color   = rndColor();
   const x       = W * 0.15 + Math.random() * W * 0.7;
-  const targetY = H * (0.12 + Math.random() * 0.35);
+  const targetY = H * (0.08 + Math.random() * 0.30); // higher apex: 8-38% from top
   const vy      = (targetY - H) / 55;          // reach apex in ~55 frames
   return { x, y: H, vx: (Math.random() - 0.5) * 1.5, vy, color, trail: [], targetY, exploded: false, particles: [] };
 }
 
 function burst(x: number, y: number, color: string): Particle[] {
   const out: Particle[] = [];
-  const count = 70 + Math.floor(Math.random() * 50);
+  const count = 150 + Math.floor(Math.random() * 80); // was 70-120, now 150-230
 
   for (let i = 0; i < count; i++) {
     const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.3;
-    const speed = 1.8 + Math.random() * 4.5;
+    const speed = 3.5 + Math.random() * 8.5; // was 1.8-6.3, now 3.5-12
     out.push({
       x, y,
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed,
       alpha: 1,
       color: Math.random() < 0.25 ? rndColor() : color,
-      size: 2 + Math.random() * 2.8,
-      decay: 0.010 + Math.random() * 0.008,
-      gravity: 0.055 + Math.random() * 0.04,
+      size: 3 + Math.random() * 4,           // was 2-4.8, now 3-7
+      decay: 0.008 + Math.random() * 0.006,  // slower fade = longer trails
+      gravity: 0.07 + Math.random() * 0.05,
     });
   }
-  // Extra glitter sparkles
-  for (let i = 0; i < 30; i++) {
+  // Extra glitter sparkles — more of them, wider spread
+  for (let i = 0; i < 70; i++) {            // was 30, now 70
     const angle = Math.random() * Math.PI * 2;
-    const speed = 0.5 + Math.random() * 5;
+    const speed = 1 + Math.random() * 9;    // was 0.5-5.5, now 1-10
     out.push({
       x, y,
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed,
       alpha: 1,
       color: Math.random() < 0.5 ? "#ffffff" : color,
-      size: 1 + Math.random() * 1.5,
-      decay: 0.022 + Math.random() * 0.01,
-      gravity: 0.04,
+      size: 1.5 + Math.random() * 2.5,      // was 1-2.5, now 1.5-4
+      decay: 0.018 + Math.random() * 0.012,
+      gravity: 0.05,
     });
   }
   return out;
@@ -94,9 +94,16 @@ function dot(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, col
   ctx.restore();
 }
 
-// Rocket launch schedule (ms after activation)
-const SCHEDULE_MS = [100, 500, 950, 1300, 1700, 2100, 2550, 2950, 3400, 3850, 4250, 4700];
-const SHOW_DURATION_MS = 8000;
+// Rocket launch schedule (ms after activation) — 24 rockets, tighter grouping
+const SCHEDULE_MS = [
+  100,  300,  550,  800,
+  1000, 1200, 1450, 1650,
+  1900, 2100, 2350, 2600,
+  2800, 3000, 3250, 3500,
+  3700, 3950, 4200, 4450,
+  4700, 4950, 5200, 5500,
+];
+const SHOW_DURATION_MS = 10000;
 
 // ── Props & component ─────────────────────────────────────────────────────
 interface FireworksProps { active: boolean; }
@@ -172,15 +179,16 @@ export const Fireworks = ({ active }: FireworksProps) => {
             r.exploded   = true;
             r.particles  = burst(r.x, r.y, r.color);
 
-            // Flash at explosion origin
+            // Flash at explosion origin — large double-ring burst
             ctx.save();
-            ctx.globalAlpha = 0.65;
-            const g = ctx.createRadialGradient(r.x, r.y, 0, r.x, r.y, 70);
-            g.addColorStop(0, r.color);
+            ctx.globalAlpha = 0.8;
+            const g = ctx.createRadialGradient(r.x, r.y, 0, r.x, r.y, 140); // was 70, now 140
+            g.addColorStop(0, "#ffffff");
+            g.addColorStop(0.2, r.color);
             g.addColorStop(1, "transparent");
             ctx.fillStyle = g;
             ctx.beginPath();
-            ctx.arc(r.x, r.y, 70, 0, Math.PI * 2);
+            ctx.arc(r.x, r.y, 140, 0, Math.PI * 2);
             ctx.fill();
             ctx.restore();
           }

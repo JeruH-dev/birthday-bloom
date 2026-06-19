@@ -185,7 +185,7 @@ export const MemoryGallery = () => (
         viewport={{ once: true }}
         transition={{ delay: 0.5 }}
       >
-        Replace the photos in <code>/src/assets/photo-1.jpg</code> to personalize 💕
+       Replace the photos in <code>/src/assets/photo-1.jpg</code> to personalize 💕
       </motion.p>
     </div>
   </section>

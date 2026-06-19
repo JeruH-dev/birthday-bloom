@@ -179,7 +179,7 @@ export const ReasonsSection = () => (
           className="mt-4 font-body text-base max-w-md mx-auto"
           style={{ color: "hsl(340 30% 48%)" }}
         >
-          Hover over each card to feel the love.
+          Hover over each card to feel my love.😍
         </p>
       </motion.div>
 
