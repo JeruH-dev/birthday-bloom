@@ -27,7 +27,7 @@ import { RomanticFooter } from "@/components/romantic/RomanticFooter";
 import { Fireworks }      from "@/components/romantic/Fireworks";
 
 // ── Helper: has the birthday already passed? ─────────────────────────────
-const BIRTHDAY = new Date(2026, 5, 19, 12, 55, 0); // July 27 2026 (month = 0-indexed)
+const BIRTHDAY = new Date(2026, 6, 27, 0, 0, 0); // July 27 2026 (month = 0-indexed)
 const birthdayAlreadyHere = () => Date.now() >= BIRTHDAY.getTime();
 
 // ── Smooth scroll helper ─────────────────────────────────────────────────
